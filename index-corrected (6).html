@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal — Prof. Zerrouki · Ouargla University</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#f0f7f2;--bg2:#e6f2ea;--bg3:#d8eede;
+  --nav-bg:#1a3d2b;--nav-bg2:#143323;
+  --sidebar-bg:#1a3d2b;
+  --green:#2d7a4f;--green2:#3a9e65;--green3:#5cbd84;
+  --green-pale:#e8f5ee;--green-pale2:#d0ebda;
+  --white:#ffffff;
+  --border:#c8e0d0;--border2:#2d7a4f;
+  --text:#1a2e22;--text2:#3a5445;--muted:#6b8f78;--muted2:#9ab5a3;
+  --gold:#c47c00;--gold2:#e8a000;
+  --red:#c0392b;--red2:#e05555;
+  --blue:#1a5276;--blue2:#2980b9;
+  --teal:#0e7c7b;
+  --shadow:0 1px 4px rgba(26,61,43,.08);
+  --shadow2:0 4px 16px rgba(26,61,43,.12);
+  --r:8px;--r2:12px;--r3:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+a{color:var(--green);text-decoration:none}
+
+/* NAV */
+nav{background:var(--nav-bg);position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;display:flex;align-items:center;gap:10px;cursor:pointer}
+.nav-brand-sub{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:2px}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--green3);animation:blink 2.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:100px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#fff}
+.nav-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--green3)}
+.nav-notif{position:relative;cursor:pointer}
+.notif-bell{width:34px;height:34px;border-radius:var(--r);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s}
+.notif-bell:hover{background:rgba(255,255,255,.2)}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red2);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.45rem;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--nav-bg);display:none}
+.nav-btn{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.04em;text-transform:uppercase;padding:6px 13px;border-radius:var(--r);cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,.22);background:transparent;color:rgba(255,255,255,.75)}
+.nav-btn:hover{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
+.nav-btn.danger:hover{border-color:var(--red2);color:#f8a0a0}
+.nav-btn.gold-btn{border-color:rgba(232,160,0,.4);color:#f0c060}
+.nav-btn.gold-btn:hover{border-color:var(--gold2);background:rgba(232,160,0,.1)}
+.nav-btn.primary-btn{background:var(--green2);border-color:var(--green2);color:#fff}
+.nav-btn.primary-btn:hover{background:var(--green3);border-color:var(--green3)}
+
+/* NOTIFICATIONS DROPDOWN */
+.notif-dropdown{position:absolute;top:44px;right:0;width:320px;background:#fff;border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow2);display:none;z-index:400;overflow:hidden}
+.notif-dropdown.open{display:block}
+.notif-hd{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.notif-hd-title{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--text);font-weight:600}
+.notif-mark-all{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:.04em}
+.notif-mark-all:hover{text-decoration:underline}
+.notif-list{max-height:320px;overflow-y:auto}
+.notif-item{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;display:flex;gap:10px;align-items:flex-start}
+.notif-item:hover{background:var(--green-pale)}
+.notif-item.unread{background:var(--green-pale)}
+.notif-item.unread::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green2);flex-shrink:0;margin-top:5px}
+.notif-item:not(.unread)::before{content:'';width:6px;height:6px;flex-shrink:0}
+.notif-item-body{flex:1}
+.notif-item-title{font-size:.82rem;font-weight:500;color:var(--text);margin-bottom:2px}
+.notif-item-time{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted)}
+.notif-empty{padding:24px;text-align:center;font-size:.82rem;color:var(--muted)}
+
+/* CENTER BOX */
+.center-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:var(--bg)}
+.box{width:100%;max-width:460px;background:var(--white);border:1px solid var(--border);border-radius:var(--r3);padding:36px;box-shadow:var(--shadow2);position:relative;overflow:hidden}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green3),var(--green2))}
+.box-icon{width:52px;height:52px;border-radius:14px;background:var(--green-pale);border:2px solid var(--green-pale2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 16px}
+.box-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--text);text-align:center;margin-bottom:4px}
+.box-sub{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px}
+.box-divider{height:1px;background:var(--border);margin:18px 0}
+
+/* FORMS */
+.field{margin-bottom:13px}
+.fl{display:block;font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:5px;font-weight:500}
+.fi{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--text);padding:9px 13px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.fi:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(45,122,79,.1)}
+.fi::placeholder{color:var(--muted2)}
+.fi option{background:#fff;color:var(--text)}
+textarea.fi{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.form-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+.btn-full{width:100%;padding:11px;background:var(--green);color:#fff;border:none;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;letter-spacing:.01em}
+.btn-full:hover{background:var(--green2);box-shadow:0 4px 12px rgba(45,122,79,.25)}
+.btn-ghost{width:100%;padding:10px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:.84rem;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-ghost:hover{color:var(--text);border-color:var(--green2)}
+.link-txt{text-align:center;font-size:.8rem;color:var(--muted);margin-top:14px}
+.link-txt a{color:var(--green);cursor:pointer;font-weight:500}
+.link-txt a:hover{text-decoration:underline}
+.alert{padding:10px 14px;border-radius:var(--r);margin-bottom:13px;display:none;font-size:.8rem;line-height:1.6;border-left:3px solid}
+.alert-err{background:#fef2f2;border-color:var(--red2);color:var(--red)}
+.alert-ok{background:var(--green-pale);border-color:var(--green2);color:var(--green)}
+.alert-warn{background:#fffbeb;border-color:var(--gold2);color:var(--gold)}
+.alert-info{background:#eff6ff;border-color:var(--blue2);color:var(--blue)}
+
+/* TOGGLE SWITCH */
+.toggle-wrap{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r);background:var(--green-pale);border:1px solid var(--green-pale2)}
+.toggle-lbl{font-size:.84rem;color:var(--text);flex:1}
+.toggle-sub{font-size:.72rem;color:var(--muted);margin-top:1px}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:11px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked + .toggle-slider{background:var(--green2)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(18px)}
+
+/* FILE DROP */
+.file-drop{border:2px dashed var(--border);border-radius:var(--r);padding:18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+.file-drop:hover,.file-drop.drag{border-color:var(--green2);background:var(--green-pale)}
+.file-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.file-drop-icon{font-size:1.6rem;margin-bottom:5px}
+.file-drop-txt{font-size:.8rem;color:var(--muted)}
+.file-drop-txt b{color:var(--green)}
+.file-preview{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--r);background:var(--green-pale);border:1.5px solid var(--green-pale2);margin-top:7px}
+.file-preview-name{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--green);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-preview-rm{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.85rem;padding:0 3px;transition:color .2s}
+.file-preview-rm:hover{color:var(--red2)}
+
+/* PHOTO UPLOAD */
+.photo-drop{width:120px;height:120px;border-radius:50%;border:3px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:var(--bg);margin:0 auto 16px;overflow:hidden;position:relative}
+.photo-drop:hover{border-color:var(--green2);background:var(--green-pale)}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-drop img{width:100%;height:100%;object-fit:cover}
+.photo-drop-txt{font-size:.72rem;color:var(--muted);text-align:center;padding:8px}
+
+/* PENDING */
+.pending-box{text-align:center;max-width:440px;background:var(--white);border:1px solid var(--border);border-radius:var(--r3);padding:40px 32px;box-shadow:var(--shadow2)}
+.pending-icon{font-size:3rem;margin-bottom:18px}
+.pending-box h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--text);margin-bottom:10px}
+.pending-box p{font-size:.86rem;color:var(--muted);line-height:1.85;margin-bottom:16px}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:.58rem;margin-bottom:18px}
+.pill-pending{background:#fffbeb;border:1px solid rgba(200,130,0,.25);color:var(--gold)}
+.pill-green{background:var(--green-pale);border:1px solid rgba(45,122,79,.2);color:var(--green)}
+
+/* ADMIN LAYOUT */
+.admin-layout{display:grid;grid-template-columns:230px 1fr;flex:1;min-height:0}
+.admin-side{background:var(--sidebar-bg);padding:20px 0;overflow-y:auto}
+.side-sec{padding:0 12px;margin-bottom:20px}
+.side-lbl{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 8px;margin-bottom:6px}
+.side-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 12px;border-radius:var(--r);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.83rem;color:rgba(255,255,255,.6);transition:all .2s;text-align:left}
+.side-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.side-btn.active{background:rgba(255,255,255,.14);color:#fff}
+.side-ico{font-size:.9rem;width:18px;text-align:center}
+.side-cnt{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.48rem;padding:2px 7px;border-radius:100px}
+.cnt-red{background:var(--red2);color:#fff}
+.cnt-grn{background:var(--green3);color:#fff}
+.admin-main{padding:26px 28px;overflow-y:auto;background:var(--bg)}
+.adm-hd{margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.adm-hd h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text);margin-bottom:3px}
+.adm-hd p{font-size:.8rem;color:var(--muted)}
+.atab{display:none}
+.atab.active{display:block}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:22px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px 18px;box-shadow:var(--shadow)}
+.stat-card:first-child{border-top:3px solid var(--green2)}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;color:var(--green);line-height:1;margin-bottom:3px}
+.stat-l{font-family:'JetBrains Mono',monospace;font-size:.5rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+
+/* TABLES */
+.t-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border);margin-bottom:18px;box-shadow:var(--shadow)}
+.tbl{width:100%;border-collapse:collapse;background:var(--white)}
+.tbl th{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--bg);padding:10px 13px;text-align:left;white-space:nowrap;border-bottom:1.5px solid var(--border)}
+.tbl td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:.84rem;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--green-pale)}
+.tc{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--gold)}
+.tt{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:600;color:var(--text)}
+.tsub{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--muted)}
+.stu-av{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--green-pale2)}
+.stu-av-placeholder{width:34px;height:34px;border-radius:50%;background:var(--green-pale);border:2px solid var(--green-pale2);display:inline-flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:.85rem;color:var(--green);font-weight:700}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.47rem;letter-spacing:.03em;text-transform:uppercase;padding:2px 7px;border-radius:100px;margin-right:3px}
+.bdg-pdf{background:#fef2f2;border:1px solid rgba(192,57,43,.2);color:var(--red)}
+.bdg-html{background:#eff6ff;border:1px solid rgba(41,128,185,.2);color:var(--blue2)}
+.bdg-req{background:#fef9ee;border:1px solid rgba(196,124,0,.25);color:var(--gold)}
+.bdg-opt{background:var(--green-pale);border:1px solid rgba(45,122,79,.18);color:var(--green)}
+.bdg-dl{background:var(--green-pale);border:1px solid var(--green2);color:var(--green)}
+.bdg-locked{background:#f5f5f5;border:1px solid #ccc;color:#888}
+
+/* STATUS */
+.sp{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:100px;font-weight:500}
+.sp-pending{background:#fffbeb;border:1px solid rgba(200,130,0,.25);color:var(--gold)}
+.sp-active{background:var(--green-pale);border:1px solid rgba(45,122,79,.2);color:var(--green)}
+.sp-rejected{background:#fef2f2;border:1px solid rgba(192,57,43,.2);color:var(--red)}
+.lv{font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:2px 8px;border-radius:100px;font-weight:500}
+.lv-bsc{background:var(--green-pale);border:1px solid rgba(45,122,79,.2);color:var(--green)}
+.lv-msc{background:#fffbeb;border:1px solid rgba(200,130,0,.25);color:var(--gold)}
+.lv-phd{background:#eff6ff;border:1px solid rgba(41,128,185,.2);color:var(--blue2)}
+.lv-all{background:#f0fff0;border:1px solid rgba(14,124,123,.2);color:var(--teal)}
+
+/* ACTION BUTTONS */
+.ab{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.03em;text-transform:uppercase;padding:5px 11px;border-radius:var(--r);cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-weight:500}
+.ab-ok{background:var(--green-pale);color:var(--green);border:1.5px solid rgba(45,122,79,.25)}
+.ab-ok:hover{background:var(--green-pale2);border-color:var(--green2)}
+.ab-rej{background:#fef2f2;color:var(--red);border:1.5px solid rgba(192,57,43,.2)}
+.ab-rej:hover{background:#fee2e2}
+.ab-rm{background:#f5f5f5;color:#666;border:1.5px solid #ddd}
+.ab-rm:hover{background:#fef2f2;color:var(--red);border-color:rgba(192,57,43,.2)}
+.ab-edit{background:#eff6ff;color:var(--blue2);border:1.5px solid rgba(41,128,185,.2)}
+.ab-edit:hover{background:#dbeafe}
+.ab-save{background:var(--green);color:#fff;border:1.5px solid var(--green)}
+.ab-save:hover{background:var(--green2);box-shadow:0 2px 8px rgba(45,122,79,.25)}
+.ab-gold{background:#fffbeb;color:var(--gold);border:1.5px solid rgba(200,130,0,.25)}
+.ab-gold:hover{background:#fef9c3}
+.ab-pub{background:#f0fff0;color:var(--teal);border:1.5px solid rgba(14,124,123,.2)}
+.ab-pub:hover{background:#ccfbf1}
+.ab-view{background:var(--green-pale);color:var(--green);border:1.5px solid rgba(45,122,79,.25)}
+.ab-view:hover{background:var(--green-pale2)}
+.ab-dl{background:var(--green);color:#fff;border:1.5px solid var(--green)}
+.ab-dl:hover{background:var(--green2)}
+
+/* SECTION LABEL */
+.sec-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+
+/* ADMIN FORM BOXES */
+.add-box{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.add-box h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:3px}
+.add-box p{font-size:.78rem;color:var(--muted);margin-bottom:14px}
+.add-box-accent{border-left:4px solid var(--green2)}
+
+/* COURSE CARDS */
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px;margin-bottom:18px}
+.course-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:18px;box-shadow:var(--shadow);transition:all .2s}
+.course-card:hover{border-color:var(--green2);box-shadow:var(--shadow2)}
+.course-card.hidden-course{opacity:.55;border-style:dashed}
+.cc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px}
+.cc-code{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--gold);margin-bottom:3px;font-weight:500}
+.cc-name{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:600;color:var(--text);line-height:1.3}
+.cc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-size:.53rem;color:var(--muted)}
+.cc-dl-default{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:8px}
+.cc-dl-default span{font-size:.76rem;color:var(--text2);flex:1}
+.cc-files{display:flex;flex-direction:column;gap:4px}
+.cc-file{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);transition:all .2s;cursor:pointer}
+.cc-file:hover{border-color:var(--green2);background:var(--green-pale)}
+.cc-file-name{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-file-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.no-files{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--muted2);padding:10px;text-align:center;border:1.5px dashed var(--border);border-radius:var(--r)}
+
+/* MINI FILE PREVIEW CARD */
+.mini-preview-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.mini-preview-card:hover{border-color:var(--green2);box-shadow:var(--shadow2);background:var(--green-pale)}
+.mini-file-ico{width:44px;height:54px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.mini-ico-pdf{background:#fef2f2;border:1px solid rgba(192,57,43,.15)}
+.mini-ico-html{background:#eff6ff;border:1px solid rgba(41,128,185,.15)}
+.mini-file-body{flex:1;min-width:0}
+.mini-file-title{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-file-meta{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-file-actions{display:flex;gap:6px;flex-shrink:0}
+.mini-ack-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.48rem;text-transform:uppercase;padding:2px 7px;border-radius:100px;background:#f0fff0;border:1px solid rgba(14,124,123,.2);color:var(--teal)}
+
+/* LECTION SECTION */
+.lec-course-block{margin-bottom:28px}
+.lec-course-title{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);border-left:4px solid var(--green2)}
+.lec-code{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--gold);font-weight:500}
+.lec-name{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--text);font-weight:600}
+.lec-sched{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--muted)}
+.progress-bar-wrap{margin-top:8px;margin-bottom:4px}
+.progress-bar-lbl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--muted);margin-bottom:4px}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green2);border-radius:3px;transition:width .4s}
+.lec-empty{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted2);padding:14px;text-align:center;border:1.5px dashed var(--border);border-radius:var(--r)}
+
+/* PRACTICAL */
+.pw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.pw-card{padding:16px 18px;border-radius:var(--r2);border:1.5px solid var(--border);background:var(--white);box-shadow:var(--shadow);border-left:4px solid var(--green2);transition:all .2s}
+.pw-card:hover{box-shadow:var(--shadow2);border-left-color:var(--gold)}
+.pw-num{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--green);margin-bottom:4px;font-weight:500}
+.pw-title{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:600;color:var(--text);margin-bottom:4px}
+.pw-desc{font-size:.76rem;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.pw-countdown{font-family:'JetBrains Mono',monospace;font-size:.54rem;font-weight:600;padding:3px 8px;border-radius:100px;display:inline-block;margin-bottom:8px}
+.cd-urgent{background:#fef2f2;color:var(--red);border:1px solid rgba(192,57,43,.2)}
+.cd-soon{background:#fffbeb;color:var(--gold);border:1px solid rgba(200,130,0,.2)}
+.cd-ok{background:var(--green-pale);color:var(--green);border:1px solid rgba(45,122,79,.2)}
+.cd-done{background:#f5f5f5;color:#888;border:1px solid #ddd}
+.pw-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.pw-submit-status{font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:3px 9px;border-radius:100px}
+.pws-none{background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+.pws-submitted{background:#fffbeb;border:1px solid rgba(200,130,0,.2);color:var(--gold)}
+.pws-received{background:#eff6ff;border:1px solid rgba(41,128,185,.2);color:var(--blue2)}
+.pws-graded{background:var(--green-pale);border:1px solid rgba(45,122,79,.2);color:var(--green)}
+
+/* GRADES */
+.grades-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.grade-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);text-align:center;transition:all .2s}
+.grade-card:hover{border-color:var(--green2);box-shadow:var(--shadow2)}
+.grade-code{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--gold);margin-bottom:4px}
+.grade-name{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--text);margin-bottom:12px;line-height:1.3}
+.grade-score{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:700;line-height:1;margin-bottom:4px}
+.grade-score.excellent{color:var(--green)}
+.grade-score.good{color:var(--teal)}
+.grade-score.average{color:var(--gold)}
+.grade-score.poor{color:var(--red)}
+.grade-score.none{color:var(--muted2);font-size:1.5rem}
+.grade-max{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--muted)}
+.grade-comment{font-size:.76rem;color:var(--muted);margin-top:8px;font-style:italic}
+
+/* ANNOUNCEMENTS */
+.ann-list{display:flex;flex-direction:column;gap:9px}
+.ann{padding:14px 16px;border-radius:var(--r2);border:1.5px solid var(--border);background:var(--white);box-shadow:var(--shadow);border-left:4px solid var(--green2);transition:all .2s}
+.ann.unread{border-left-color:var(--gold);background:#fffdf5}
+.ann-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+.ann-title-text{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:600;color:var(--text)}
+.ann-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ann-date{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted)}
+.ann-body{font-size:.82rem;color:var(--text2);line-height:1.75}
+.ann-body em{color:var(--gold);font-style:normal;font-weight:500}
+.ann-actions{display:flex;gap:6px;margin-top:8px}
+
+/* POSITIONS */
+.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px}
+.pos-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);transition:all .2s}
+.pos-card:hover{border-color:var(--green2);box-shadow:var(--shadow2);transform:translateY(-2px)}
+.pos-card-img{width:100%;height:140px;object-fit:cover;display:block;background:var(--green-pale)}
+.pos-card-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--green-pale)}
+.pos-body{padding:16px}
+.pos-type-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.pos-type-badge{font-family:'JetBrains Mono',monospace;font-size:.54rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 9px;border-radius:100px;background:var(--green-pale);border:1px solid rgba(45,122,79,.2);color:var(--green);font-weight:500}
+.pos-title-text{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.3}
+.pos-desc-text{font-size:.78rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.pos-attachments{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.pos-att-file{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text)}
+.pos-att-file:hover{border-color:var(--green2);background:var(--green-pale);color:var(--green)}
+.pos-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+.pos-deadline{font-family:'JetBrains Mono',monospace;font-size:.54rem}
+.dl-ok{color:var(--muted)}
+.dl-soon{color:var(--gold);font-weight:600}
+.dl-urgent{color:var(--red);font-weight:700}
+
+/* PUBLISH ITEMS (admin) */
+.pub-item{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:11px;box-shadow:var(--shadow);transition:all .2s}
+.pub-item:hover{border-color:var(--green2)}
+.pub-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.pub-item-title{font-family:'Playfair Display',serif;font-size:.97rem;font-weight:600;color:var(--text);line-height:1.35}
+.pub-item-body{font-size:.8rem;color:var(--muted);line-height:1.7;margin-bottom:8px}
+.pub-item-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pub-date{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted2)}
+.pub-actions{display:flex;gap:5px;flex-shrink:0}
+.pos-img-preview{width:100%;height:100px;border-radius:var(--r);object-fit:cover;margin-top:8px;border:1px solid var(--border)}
+
+/* LEVEL TARGET */
+.level-target{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.lv-pick{display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:4px 10px;border-radius:var(--r);cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);transition:all .2s;font-weight:500}
+.lv-pick:has(input:checked){background:var(--green-pale);border-color:var(--green2);color:var(--green)}
+.lv-pick input{accent-color:var(--green2);cursor:pointer}
+
+/* PORTAL */
+.portal-body{max-width:1200px;margin:0 auto;padding:24px 22px 48px;flex:1;width:100%}
+.id-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;box-shadow:var(--shadow2);border-top:4px solid var(--green2)}
+.idc-left{display:flex;align-items:center;gap:14px}
+.idc-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--green-pale2)}
+.idc-photo-placeholder{width:56px;height:56px;border-radius:50%;background:var(--green-pale);border:3px solid var(--green-pale2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--green)}
+.idc-name{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:2px;font-weight:600}
+.idc-email{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted)}
+.idc-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.idc-card{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--gold);letter-spacing:.12em;font-weight:500}
+.idc-lbl{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2)}
+.idc-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-pale);border:1.5px solid rgba(45,122,79,.2);border-radius:100px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--green);font-weight:500}
+
+/* PORTAL TABS */
+.ptabs{display:flex;gap:3px;border-bottom:2px solid var(--border);margin-bottom:22px;overflow-x:auto;padding-bottom:0}
+.ptab{padding:9px 16px;border:none;border-radius:var(--r) var(--r) 0 0;background:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-weight:500}
+.ptab:hover{color:var(--text);background:var(--green-pale)}
+.ptab.active{color:var(--green);border-bottom-color:var(--green2);background:var(--green-pale)}
+.psec{display:none}
+.psec.active{display:block}
+
+/* VIEWER */
+.viewer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;display:none;flex-direction:column}
+.viewer-overlay.open{display:flex}
+.viewer-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--nav-bg);border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.viewer-title{font-family:'Playfair Display',serif;font-size:1rem;color:#fff}
+.viewer-meta{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:rgba(255,255,255,.5)}
+.viewer-close{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;text-transform:uppercase;padding:7px 14px;border-radius:var(--r);background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.35);color:#f08080;cursor:pointer;transition:all .2s}
+.viewer-close:hover{background:rgba(192,57,43,.35)}
+.viewer-frame{flex:1;width:100%;border:none;background:#fff}
+.viewer-html-body{flex:1;width:100%;border:none;background:#fff}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,61,43,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r3);width:100%;max-width:560px;padding:26px;position:relative;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green3));border-radius:var(--r3) var(--r3) 0 0}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:3px;margin-top:8px}
+.modal-sub{font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.7}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--border);color:var(--text)}
+.modal-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.course-checks{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ccw{display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted);padding:4px 9px;border-radius:var(--r);background:var(--bg);border:1.5px solid var(--border);cursor:pointer;transition:all .2s;font-weight:500}
+.ccw:has(input:checked){background:var(--green-pale);border-color:var(--green2);color:var(--green)}
+.ccw input{accent-color:var(--green2);cursor:pointer}
+.upload-list{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.ul-item{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border)}
+.ul-name{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ul-rm{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.8rem;padding:0 3px}
+.ul-rm:hover{color:var(--red2)}
+
+/* SETTINGS TAB */
+.settings-section{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.settings-section h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);margin-bottom:4px;font-weight:600}
+.settings-section p{font-size:.78rem;color:var(--muted);margin-bottom:14px}
+
+/* EMPTY */
+.empty{text-align:center;padding:36px 20px;color:var(--muted);background:var(--white);border:1.5px dashed var(--border);border-radius:var(--r2)}
+.empty-ico{font-size:2.2rem;margin-bottom:10px}
+.empty p{font-size:.84rem;line-height:1.7}
+
+/* FOOTER */
+footer{border-top:2px solid var(--border);padding:16px 0;margin-top:auto;background:var(--white)}
+.fi-row{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.f-brand{font-family:'Playfair Display',serif;color:var(--green);font-size:.92rem;font-weight:600}
+.f-copy{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--muted2);letter-spacing:.05em}
+
+@media(max-width:900px){
+  .admin-layout{grid-template-columns:1fr}
+  .admin-side{border-bottom:1px solid rgba(255,255,255,.1)}
+  .side-sec{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+  .side-lbl{display:none}
+  .side-btn{padding:7px 10px;font-size:.76rem}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .form-3,.form-4{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .box{padding:22px 16px}
+  .stats-row{grid-template-columns:1fr}
+  .form-3,.form-4,.form-row{grid-template-columns:1fr}
+  .id-card{flex-direction:column;align-items:flex-start}
+  .idc-right{align-items:flex-start}
+  .ptab{font-size:.52rem;padding:8px 10px}
+}
+
+
+/* DRAG REORDER */
+.cc-file[draggable]{cursor:grab}
+.cc-file[draggable]:active{cursor:grabbing;opacity:.7;background:var(--green-pale)!important}
+.cc-file.drag-over{border-top:2px solid var(--green2)!important;background:var(--green-pale)!important}
+
+</style>
+</head>
+<body>
+
+<!-- ═══ SETUP ═══ -->
+<div id="scr-setup" class="screen">
+  <nav><div class="nav-in"><div class="nav-brand"><div class="nav-dot"></div>Portal Setup</div></div></nav>
+  <div class="center-wrap">
+    <div class="box">
+      <div class="box-icon">🔧</div>
+      <div class="box-title">First-Time Setup</div>
+      <div class="box-sub">Create your professor account — runs once</div>
+      <div class="alert alert-warn" style="display:block">Credentials are stored securely in this browser only.</div>
+      <div class="alert alert-err" id="setup-err"></div>
+      <div class="field"><label class="fl">Full Name</label><input class="fi" id="s-name" placeholder="Prof. Dr. Djamal Zerrouki"></div>
+      <div class="field"><label class="fl">Login Email</label><input class="fi" id="s-email" type="email" placeholder="zerrouki@univ-ouargla.dz"></div>
+      <div class="field"><label class="fl">Password (min. 6 chars)</label><input class="fi" id="s-pw" type="password" placeholder="••••••••"></div>
+      <div class="field"><label class="fl">Confirm Password</label><input class="fi" id="s-pw2" type="password" placeholder="••••••••"></div>
+      <button class="btn-full" onclick="doSetup()">Create Account &amp; Continue →</button>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Student Portal</div><div class="f-copy">© 2026 — Ouargla University</div></div></footer>
+</div>
+
+<!-- ═══ REGISTER ═══ -->
+<div id="scr-register" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot"></div>Prof. Zerrouki · Student Portal<span class="nav-brand-sub">Ouargla University</span></div>
+    <div class="nav-right">
+      <button class="nav-btn" onclick="go('login')">Sign In</button>
+      <button class="nav-btn gold-btn" onclick="go('admin-login')">Professor</button>
+    </div>
+  </div></nav>
+  <div class="center-wrap">
+    <div class="box">
+      <div class="box-icon">🎓</div>
+      <div class="box-title">Student Registration</div>
+      <div class="box-sub">Ouargla University · Prof. Zerrouki</div>
+      <div class="alert alert-err" id="reg-err"></div>
+      <div class="alert alert-ok" id="reg-ok"></div>
+      <div class="form-row">
+        <div class="field"><label class="fl">First Name *</label><input class="fi" id="r-fn" placeholder="Amira"></div>
+        <div class="field"><label class="fl">Last Name *</label><input class="fi" id="r-ln" placeholder="Benali"></div>
+      </div>
+      <div class="field"><label class="fl">University Email *</label><input class="fi" id="r-email" type="email" placeholder="a.benali@univ-ouargla.dz"></div>
+      <div class="field"><label class="fl">Student ID *</label><input class="fi" id="r-sid" placeholder="20251234"></div>
+      <div class="field"><label class="fl">Study Level *</label>
+        <select class="fi" id="r-level"><option value="">— Select —</option><option value="BSc">BSc — Bachelor</option><option value="MSc">MSc — Master</option><option value="PhD">PhD — Doctorate</option></select>
+      </div>
+      <div class="field"><label class="fl">Department</label><input class="fi" id="r-dept" placeholder="Nanotechnology & Material Science"></div>
+      <div class="field"><label class="fl">Password *</label><input class="fi" id="r-pw" type="password" placeholder="••••••••"></div>
+      <div class="field"><label class="fl">Confirm Password *</label><input class="fi" id="r-pw2" type="password" placeholder="••••••••"></div>
+      <button class="btn-full" onclick="doRegister()">Submit Registration →</button>
+      <div class="link-txt">Already registered? <a onclick="go('login')">Sign in here</a></div>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="scr-login" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot"></div>Prof. Zerrouki · Student Portal</div>
+    <div class="nav-right"><button class="nav-btn gold-btn" onclick="go('admin-login')">Professor Login</button></div>
+  </div></nav>
+  <div class="center-wrap">
+    <div class="box">
+      <div class="box-icon">📚</div>
+      <div class="box-title">Student Sign In</div>
+      <div class="box-sub">Ouargla University · Prof. Zerrouki</div>
+      <div class="alert alert-err" id="login-err"></div>
+      <div class="field"><label class="fl">Email</label><input class="fi" id="l-u" autocomplete="off" placeholder="a.benali@univ-ouargla.dz"></div>
+      <div class="field"><label class="fl">Password</label><input class="fi" id="l-pw" type="password" placeholder="••••••••"></div>
+      <button class="btn-full" onclick="doLogin()">Sign In →</button>
+      <button class="btn-ghost" onclick="go('register')">← Create new account</button>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ PHOTO UPLOAD ═══ -->
+<div id="scr-photo" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot"></div>Prof. Zerrouki · Student Portal</div>
+    <div class="nav-right"><button class="nav-btn danger" onclick="doSLogout()">Sign Out</button></div>
+  </div></nav>
+  <div class="center-wrap">
+    <div class="box" style="max-width:400px">
+      <div class="box-icon">📷</div>
+      <div class="box-title">Profile Photo Required</div>
+      <div class="box-sub">Professor requires a photo to access the portal</div>
+      <div class="alert alert-info" style="display:block">Your photo will appear on your student ID card and be visible to the professor.</div>
+      <div class="alert alert-err" id="photo-err"></div>
+      <div style="position:relative;width:120px;height:120px;margin:16px auto">
+        <div class="photo-drop" id="photo-drop">
+          <input type="file" id="photo-file" accept="image/*" onchange="onPhotoSelected(this)">
+          <div id="photo-placeholder"><div class="photo-drop-txt">📷<br>Click to upload<br>your photo</div></div>
+          <img id="photo-preview-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
+      </div>
+      <p style="text-align:center;font-size:.75rem;color:var(--muted);margin-bottom:16px">Accepted: JPG, PNG, GIF — Max 2MB</p>
+      <button class="btn-full" onclick="savePhoto()">Save Photo &amp; Continue →</button>
+      <button class="btn-ghost" onclick="skipPhoto()">Skip for now</button>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ PENDING ═══ -->
+<div id="scr-pending" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot"></div>Prof. Zerrouki · Student Portal</div>
+    <div class="nav-right"><button class="nav-btn danger" onclick="doSLogout()">Sign Out</button></div>
+  </div></nav>
+  <div class="center-wrap">
+    <div class="pending-box">
+      <div class="pending-icon">⏳</div>
+      <h2>Awaiting Professor Approval</h2>
+      <p>Your registration was submitted successfully. Prof. Zerrouki will review your application, assign you to the appropriate courses, and validate your account.</p>
+      <div class="status-pill pill-pending"><span style="width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block"></span>Pending review</div>
+      <p style="font-size:.76rem;color:var(--muted2)">Registered as: <strong id="pending-email" style="color:var(--text)"></strong></p>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ STUDENT PORTAL ═══ -->
+<div id="scr-portal" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot"></div>Student Portal</div>
+    <div class="nav-right">
+      <div class="nav-notif" onclick="toggleNotif(event)">
+        <div class="notif-bell">🔔</div>
+        <div class="notif-badge" id="notif-badge">0</div>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-hd"><span class="notif-hd-title">Notifications</span><span class="notif-mark-all" onclick="markAllRead(event)">Mark all read</span></div>
+          <div class="notif-list" id="notif-list"></div>
+        </div>
+      </div>
+      <div class="nav-chip"><span class="nav-chip-dot"></span><span id="portal-chip">–</span></div>
+      <button class="nav-btn danger" onclick="doSLogout()">Sign Out</button>
+    </div>
+  </div></nav>
+  <div class="portal-body">
+    <div class="id-card">
+      <div class="idc-left">
+        <div id="idc-photo-wrap"></div>
+        <div>
+          <div class="idc-name" id="p-name">–</div>
+          <div class="idc-email" id="p-email">–</div>
+        </div>
+      </div>
+      <div class="idc-right">
+        <div><div class="idc-lbl">Student Card No.</div><div class="idc-card" id="p-card">–</div></div>
+        <div class="idc-badge"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span><span id="p-lvl">BSc</span> Student</div>
+      </div>
+    </div>
+    <div class="ptabs">
+      <button class="ptab active" onclick="switchTab('lectures',this)">📖 Lectures</button>
+      <button class="ptab" onclick="switchTab('practical',this)">⚗️ Practical Work</button>
+      <button class="ptab" onclick="switchTab('grades',this)">📊 Grades</button>
+      <button class="ptab" onclick="switchTab('announcements',this)">📢 Announcements <span id="ann-unread-badge" style="display:none;font-size:.45rem;background:var(--gold);color:#fff;padding:1px 5px;border-radius:100px;vertical-align:middle">0</span></button>
+      <button class="ptab" onclick="switchTab('tests',this)">📝 Tests</button>
+      <button class="ptab" onclick="switchTab('positions',this)">🔬 Open Positions</button>
+      <button class="ptab" onclick="switchTab('settings',this)">⚙️ Settings</button>
+    </div>
+    <div id="psec-lectures" class="psec active"><div id="p-lectures"></div></div>
+    <div id="psec-practical" class="psec"><div id="p-practical"></div></div>
+    <div id="psec-grades" class="psec"><div id="p-grades"></div></div>
+    <div id="psec-announcements" class="psec"><div id="p-announcements"></div></div>
+    <div id="psec-tests" class="psec"><div id="p-tests"></div></div>
+    <div id="psec-positions" class="psec"><div id="p-positions"></div></div>
+    <div id="psec-settings" class="psec"><div id="p-settings"></div></div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ ADMIN LOGIN ═══ -->
+<div id="scr-admin-login" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot" style="background:var(--gold2)"></div>Professor Login</div>
+    <div class="nav-right"><button class="nav-btn" onclick="go('login')">Student Login</button></div>
+  </div></nav>
+  <div class="center-wrap">
+    <div class="box">
+      <div class="box-icon">🔐</div>
+      <div class="box-title">Professor Login</div>
+      <div class="box-sub">Admin access · Portal management</div>
+      <div class="alert alert-err" id="adm-err"></div>
+      <div class="field"><label class="fl">Email</label><input class="fi" id="adm-u" autocomplete="off"></div>
+      <div class="field"><label class="fl">Password</label><input class="fi" id="adm-pw" type="password" placeholder="••••••••"></div>
+      <button class="btn-full" onclick="doAdminLogin()">Sign In →</button>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ ADMIN DASHBOARD ═══ -->
+<div id="scr-admin" class="screen">
+  <nav><div class="nav-in">
+    <div class="nav-brand"><div class="nav-dot" style="background:var(--gold2)"></div>Admin Dashboard — Prof. Zerrouki</div>
+    <div class="nav-right">
+      <div class="nav-chip" style="border-color:rgba(232,160,0,.4)"><span style="width:5px;height:5px;border-radius:50%;background:var(--gold2);display:inline-block"></span><span id="adm-chip">Prof.</span></div>
+      <button class="nav-btn danger" onclick="doAdminLogout()">Sign Out</button>
+    </div>
+  </div></nav>
+  <div class="admin-layout">
+    <div class="admin-side">
+      <div class="side-sec">
+        <div class="side-lbl">Students</div>
+        <button class="side-btn active" id="sb-pending" onclick="aTab('pending',this)"><span class="side-ico">⏳</span>Pending<span class="side-cnt cnt-red" id="cnt-pending">0</span></button>
+        <button class="side-btn" id="sb-students" onclick="aTab('students',this)"><span class="side-ico">👥</span>All Students<span class="side-cnt cnt-grn" id="cnt-students">0</span></button>
+        <button class="side-btn" id="sb-grades" onclick="aTab('grades',this)"><span class="side-ico">📊</span>Enter Grades</button>
+      </div>
+      <div class="side-sec">
+        <div class="side-lbl">Content</div>
+        <button class="side-btn" id="sb-courses" onclick="aTab('courses',this)"><span class="side-ico">📋</span>Courses &amp; Files</button>
+        <button class="side-btn" id="sb-announcements" onclick="aTab('announcements',this)"><span class="side-ico">📢</span>Announcements</button>
+        <button class="side-btn" id="sb-tests" onclick="aTab('tests',this)"><span class="side-ico">📝</span>Online Tests</button>
+        <button class="side-btn" id="sb-positions" onclick="aTab('positions',this)"><span class="side-ico">🔬</span>Open Positions</button>
+      </div>
+      <div class="side-sec">
+        <div class="side-lbl">System</div>
+        <button class="side-btn" id="sb-settings" onclick="aTab('settings',this)"><span class="side-ico">⚙️</span>Settings</button>
+      </div>
+    </div>
+    <div class="admin-main">
+      <div class="stats-row" id="adm-stats"></div>
+
+      <div id="atab-pending" class="atab active">
+        <div class="adm-hd"><h2>Pending Registrations</h2><p>Review, assign courses, then approve or reject each student.</p></div>
+        <div id="adm-pending-list"></div>
+      </div>
+
+      <div id="atab-students" class="atab">
+        <div class="adm-hd"><h2>All Students</h2><p>Manage accounts, edit course assignments, export data.</p></div>
+        <div style="margin-bottom:12px"><button class="ab ab-gold" onclick="exportCSV()">↓ Export CSV</button></div>
+        <div id="adm-students-list"></div>
+      </div>
+
+      <div id="atab-grades" class="atab">
+        <div class="adm-hd"><h2>Enter Grades</h2><p>Select a student and enter their grade per course. Students see only their own grades.</p></div>
+        <div id="adm-grades-content"></div>
+      </div>
+
+      <div id="atab-courses" class="atab">
+        <div class="adm-hd"><h2>Courses &amp; Files</h2><p>Create courses, upload PDF or HTML files. Control view and download permissions per file.</p></div>
+        <div class="add-box add-box-accent">
+          <h3>➕ Add New Course</h3>
+          <p>Fill in the details. Files are added separately after creating the course.</p>
+          <div class="form-4">
+            <div class="field"><label class="fl">Code *</label><input class="fi" id="nc-code" placeholder="NANO-501"></div>
+            <div class="field"><label class="fl">Name *</label><input class="fi" id="nc-name" placeholder="Advanced Catalysis"></div>
+            <div class="field"><label class="fl">Level *</label>
+              <select class="fi" id="nc-level"><option value="">—</option><option value="BSc">BSc</option><option value="MSc">MSc</option><option value="PhD">PhD</option></select>
+            </div>
+            <div class="field"><label class="fl">Credits</label><input class="fi" id="nc-credits" placeholder="3" type="number" min="1" max="10"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label class="fl">Schedule</label><input class="fi" id="nc-sched" placeholder="MWF 10–11 AM"></div>
+            <div class="field"><label class="fl">Description</label><input class="fi" id="nc-desc" placeholder="Short description"></div>
+          </div>
+          <div style="margin-bottom:12px">
+            <label class="fl">Default download permission for new files in this course</label>
+            <select class="fi" id="nc-dl-default" style="max-width:260px">
+              <option value="view">View only (no download)</option>
+              <option value="download">Allow download</option>
+            </select>
+          </div>
+          <div class="alert alert-err" id="nc-err"></div>
+          <button class="ab ab-save" style="padding:8px 20px" onclick="addCourse()">✓ Create Course</button>
+        </div>
+        <div id="adm-courses-list"></div>
+      </div>
+
+      <div id="atab-tests" class="atab">
+        <div class="adm-hd"><h2>Online Tests</h2><p>Create a test; enrolled students submit their answers once. Multiple-choice questions are graded automatically on the server. Written answers you grade yourself.</p></div>
+        <div class="add-box add-box-accent">
+          <h3>➕ New Test</h3>
+          <div class="field"><label class="fl">Course *</label><select class="fi" id="tst-course"></select></div>
+          <div class="field"><label class="fl">Title *</label><input class="fi" id="tst-title" placeholder="e.g. Quiz 1 — Nanoparticle synthesis"></div>
+          <div class="field"><label class="fl">Instructions</label><textarea class="fi" id="tst-instr" placeholder="Shown to the student before the questions…"></textarea></div>
+          <div class="field"><label class="fl">Time limit in minutes (empty = no limit)</label><input class="fi" id="tst-dur" type="number" min="1" placeholder="e.g. 30"></div>
+          <div class="field"><label class="fl">Closes at (optional)</label><input class="fi" id="tst-close" type="datetime-local"></div>
+          <div class="field"><label class="fl">Who can take this test?</label>
+            <select class="fi" id="tst-access">
+              <option value="all">All students enrolled in the course</option>
+              <option value="graded">Only students who already have a grade in this course (or that I authorize)</option>
+              <option value="authorized">Only students I authorize one by one</option>
+            </select></div>
+          <div class="field"><label class="lv-pick"><input type="checkbox" id="tst-showres" checked>Show the score to the student after submitting</label></div>
+          <div id="tst-qlist"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px">
+            <button class="ab" type="button" onclick="addTestQuestion('mcq')">+ Multiple choice</button>
+            <button class="ab" type="button" onclick="addTestQuestion('text')">+ Written answer</button>
+          </div>
+          <div class="alert alert-err" id="tst-err"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="ab ab-save" onclick="saveTest(true)">✓ Publish now</button>
+            <button class="ab" onclick="saveTest(false)">Save as draft</button>
+          </div>
+        </div>
+        <div id="adm-test-list"></div>
+      </div>
+
+      <div id="atab-announcements" class="atab">
+        <div class="adm-hd"><h2>Announcements</h2><p>Published announcements appear only to approved students matching the selected level(s).</p></div>
+        <div class="add-box add-box-accent">
+          <h3 id="ann-form-title">➕ New Announcement</h3>
+          <p>Compose your announcement and target it to specific student levels.</p>
+          <input type="hidden" id="ann-edit-id">
+          <div class="field"><label class="fl">Title *</label><input class="fi" id="ann-title" placeholder="e.g. Problem Set 3 Posted"></div>
+          <div class="field"><label class="fl">Content *</label><textarea class="fi" id="ann-body" placeholder="Announcement text…"></textarea></div>
+          <div class="field"><label class="fl">Visible to</label>
+            <div class="level-target">
+              <label class="lv-pick"><input type="checkbox" name="ann-lv" value="All" checked>All</label>
+              <label class="lv-pick"><input type="checkbox" name="ann-lv" value="BSc">BSc</label>
+              <label class="lv-pick"><input type="checkbox" name="ann-lv" value="MSc">MSc</label>
+              <label class="lv-pick"><input type="checkbox" name="ann-lv" value="PhD">PhD</label>
+            </div>
+          </div>
+          <div class="alert alert-err" id="ann-err"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="ab ab-save" onclick="saveAnn()">✓ Publish</button>
+            <button class="ab ab-rm" id="ann-cancel-btn" onclick="cancelAnnEdit()" style="display:none">Cancel edit</button>
+          </div>
+        </div>
+        <div id="adm-ann-list"></div>
+      </div>
+
+      <div id="atab-positions" class="atab">
+        <div class="adm-hd"><h2>Open Positions</h2><p>Manage research positions. Attach an optional image and documents per position.</p></div>
+        <div class="add-box add-box-accent">
+          <h3 id="pos-form-title">➕ New Position</h3>
+          <input type="hidden" id="pos-edit-id">
+          <div class="form-row">
+            <div class="field"><label class="fl">Title *</label><input class="fi" id="pos-title" placeholder="PhD — Electrocatalysis"></div>
+            <div class="field"><label class="fl">Type</label>
+              <select class="fi" id="pos-type"><option value="PhD">PhD</option><option value="MSc">MSc</option><option value="BSc">Undergraduate</option><option value="Postdoc">Postdoc</option></select>
+            </div>
+          </div>
+          <div class="field"><label class="fl">Description *</label><textarea class="fi" id="pos-body" placeholder="Position description and requirements…"></textarea></div>
+          <div class="form-row">
+            <div class="field"><label class="fl">Deadline</label><input class="fi" id="pos-deadline" placeholder="April 15, 2026"></div>
+            <div class="field"><label class="fl">Contact email</label><input class="fi" id="pos-contact" placeholder="zerrouki@univ-ouargla.dz"></div>
+          </div>
+          <div class="field"><label class="fl">Visible to</label>
+            <div class="level-target">
+              <label class="lv-pick"><input type="checkbox" name="pos-lv" value="All" checked>All</label>
+              <label class="lv-pick"><input type="checkbox" name="pos-lv" value="BSc">BSc</label>
+              <label class="lv-pick"><input type="checkbox" name="pos-lv" value="MSc">MSc</label>
+              <label class="lv-pick"><input type="checkbox" name="pos-lv" value="PhD">PhD</label>
+            </div>
+          </div>
+          <div class="field"><label class="fl">Position Image (optional)</label>
+            <div class="file-drop" id="pos-img-drop">
+              <input type="file" id="pos-img-file" accept="image/*" onchange="onPosImgSelected(this)">
+              <div class="file-drop-icon">🖼️</div>
+              <div class="file-drop-txt"><b>Click to upload</b> image — JPG, PNG</div>
+            </div>
+            <img id="pos-img-preview" src="" style="display:none" class="pos-img-preview">
+          </div>
+          <div class="field"><label class="fl">Attached Documents (optional)</label>
+            <div class="file-drop" id="pos-doc-drop">
+              <input type="file" id="pos-doc-file" accept=".pdf,.html,.htm" onchange="onPosDocSelected(this)">
+              <div class="file-drop-icon">📎</div>
+              <div class="file-drop-txt"><b>Click to attach</b> PDF or HTML document</div>
+            </div>
+          </div>
+          <div id="pos-doc-staging"></div>
+          <div class="alert alert-err" id="pos-err"></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="ab ab-save" onclick="savePos()">✓ Publish Position</button>
+            <button class="ab ab-rm" id="pos-cancel-btn" onclick="cancelPosEdit()" style="display:none">Cancel edit</button>
+          </div>
+        </div>
+        <div id="adm-pos-list"></div>
+      </div>
+
+      <div id="atab-settings" class="atab">
+        <div class="adm-hd"><h2>Portal Settings</h2><p>Configure global behaviour for all students.</p></div>
+        <div id="adm-settings-content"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="fi-row"><div class="f-brand">Prof. Dr. Djamal Zerrouki</div><div class="f-copy">© 2026 — Ouargla University, Algeria</div></div></footer>
+</div>
+
+<!-- ═══ MODAL: Assign courses ═══ -->
+<div id="modal-assign" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-assign')">✕</button>
+    <h3 id="assign-title">Assign Courses</h3>
+    <div class="modal-sub" id="assign-desc"></div>
+    <div class="sec-lbl"><span>Select courses</span><span style="font-size:.5rem;color:var(--muted);font-family:'JetBrains Mono',monospace">Highlighted = student's level</span></div>
+    <div class="course-checks" id="assign-courses"></div>
+    <div class="modal-actions">
+      <button class="ab ab-ok" onclick="modalApprove()">✓ Approve with selected courses</button>
+      <button class="ab ab-rej" onclick="modalReject()">✕ Reject application</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Upload file to course ═══ -->
+<div id="modal-upload" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-upload')">✕</button>
+    <h3 id="upload-title">Add File</h3>
+    <div class="modal-sub" id="upload-desc"></div>
+    <div class="field"><label class="fl">Title / Label *</label><input class="fi" id="uf-title" placeholder="Lecture 1 — Introduction to Thermodynamics"></div>
+    <div class="form-row">
+      <div class="field"><label class="fl">Category</label>
+        <select class="fi" id="uf-type"><option value="lecture">📖 Lecture</option><option value="practical">⚗️ Practical (TP)</option><option value="exam">📝 Exam / PS</option><option value="other">📎 Other</option></select>
+      </div>
+      <div class="field"><label class="fl">Obligation</label>
+        <select class="fi" id="uf-obligation"><option value="required">Required — student must acknowledge</option><option value="optional">Optional</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="fl">Download Permission</label>
+      <select class="fi" id="uf-download"><option value="view">View only — no download</option><option value="download">Allow download</option></select>
+    </div>
+    <div class="field">
+      <label class="fl">Upload File (PDF or HTML) *</label>
+      <div class="file-drop" id="uf-drop-zone">
+        <input type="file" id="uf-file" accept=".pdf,.html,.htm" onchange="onFileSelected(this)">
+        <div class="file-drop-icon">📂</div>
+        <div class="file-drop-txt"><b>Click or drag</b> — PDF or HTML accepted</div>
+      </div>
+      <div id="uf-preview" style="display:none" class="file-preview">
+        <span id="uf-prev-ico">📄</span>
+        <span class="file-preview-name" id="uf-prev-name"></span>
+        <button class="file-preview-rm" onclick="clearFile()">✕</button>
+      </div>
+    </div>
+    <div class="alert alert-err" id="uf-err"></div>
+    <div class="modal-actions">
+      <button class="ab ab-save" onclick="uploadFile()">✓ Add File</button>
+      <button class="ab ab-rm" onclick="closeModal('modal-upload')">Cancel</button>
+    </div>
+    <div style="margin-top:18px">
+      <div class="sec-lbl"><span>Existing files in this course</span></div>
+      <div id="upload-existing"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Grade entry ═══ -->
+<div id="modal-grade" class="modal-overlay">
+  <div class="modal" style="max-width:420px">
+    <button class="modal-close" onclick="closeModal('modal-grade')">✕</button>
+    <h3 id="grade-modal-title">Enter Grade</h3>
+    <div class="modal-sub" id="grade-modal-desc"></div>
+    <input type="hidden" id="gm-sid"><input type="hidden" id="gm-code">
+    <div class="form-row">
+      <div class="field"><label class="fl">Grade / Score</label><input class="fi" id="gm-score" type="number" min="0" max="20" placeholder="e.g. 15"></div>
+      <div class="field"><label class="fl">Out of</label><input class="fi" id="gm-max" type="number" value="20" min="1" max="100"></div>
+    </div>
+    <div class="field"><label class="fl">Comment (optional)</label><input class="fi" id="gm-comment" placeholder="Well done / Needs improvement…"></div>
+    <div class="modal-actions">
+      <button class="ab ab-save" onclick="saveGrade()">✓ Save Grade</button>
+      <button class="ab ab-rm" onclick="closeModal('modal-grade')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Submit practical ═══ -->
+<div id="modal-submit" class="modal-overlay">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeModal('modal-submit')">✕</button>
+    <h3 id="submit-modal-title">Submit Practical Report</h3>
+    <div class="modal-sub" id="submit-modal-desc"></div>
+    <input type="hidden" id="sm-fid"><input type="hidden" id="sm-code">
+    <div class="alert alert-info" style="display:block">Upload your completed report as PDF or Word document.</div>
+    <div class="field"><label class="fl">Upload Report *</label>
+      <div class="file-drop" id="sub-drop-zone">
+        <input type="file" id="sub-file" accept=".pdf,.doc,.docx" onchange="onSubFileSelected(this)">
+        <div class="file-drop-icon">📤</div>
+        <div class="file-drop-txt"><b>Click or drag</b> — PDF or Word</div>
+      </div>
+      <div id="sub-preview" style="display:none" class="file-preview">
+        <span>📄</span>
+        <span class="file-preview-name" id="sub-prev-name"></span>
+        <button class="file-preview-rm" onclick="clearSubFile()">✕</button>
+      </div>
+    </div>
+    <div class="alert alert-err" id="sub-err"></div>
+    <div class="modal-actions">
+      <button class="ab ab-save" onclick="submitPractical()">✓ Submit Report</button>
+      <button class="ab ab-rm" onclick="closeModal('modal-submit')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Take test (student) ═══ -->
+<div id="modal-taketest" class="modal-overlay">
+  <div class="modal" style="max-width:760px;max-height:90vh;overflow:auto">
+    <button class="modal-close" onclick="leaveTest()">✕</button>
+    <h3 id="tk-title">Test</h3>
+    <div class="modal-sub" id="tk-instr" style="white-space:pre-wrap"></div>
+    <div id="tk-timer" style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:6px 0 12px"></div>
+    <div id="tk-body"></div>
+    <div class="alert alert-err" id="tk-err"></div>
+    <button class="ab ab-save" id="tk-submit" onclick="submitTest(false)">✓ Submit answers</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Test results (professor) ═══ -->
+<div id="modal-testres" class="modal-overlay">
+  <div class="modal" style="max-width:860px;max-height:90vh;overflow:auto">
+    <button class="modal-close" onclick="closeModal('modal-testres')">✕</button>
+    <h3 id="tr-title">Results</h3>
+    <div id="tr-body"></div>
+  </div>
+</div>
+
+<!-- ═══ FILE VIEWER ═══ -->
+<div id="viewer-overlay" class="viewer-overlay">
+  <div class="viewer-bar">
+    <div><div class="viewer-title" id="viewer-title">Document</div><div class="viewer-meta" id="viewer-meta"></div></div>
+    <button class="viewer-close" onclick="closeViewer()">✕ Close</button>
+  </div>
+  <iframe id="viewer-frame" class="viewer-frame"></iframe>
+  <iframe id="viewer-html-body" class="viewer-html-body" style="display:none" sandbox="allow-scripts allow-popups"></iframe>
+</div>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SUPABASE CONFIG
+═══════════════════════════════════════════════════════════ */
+const SB_URL = 'https://icfyxqxpqerofmyumuda.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZnl4cXhwcWVyb2ZteXVtdWRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjc4NzYsImV4cCI6MjA5NzMwMzg3Nn0.MTCzMid4K69DuTcY6PR5G6XrW6aHo_gaHX7Yyse40eg';
+
+/* ── Supabase Auth session (kept in memory only) ── */
+let AUTH = null; // {access_token, refresh_token, user}
+
+async function authCall(path, method, body, useToken){
+  const headers = {'Content-Type':'application/json','apikey':SB_KEY,
+    'Authorization':'Bearer '+(useToken&&AUTH?AUTH.access_token:SB_KEY)};
+  const res = await fetch(SB_URL+'/auth/v1/'+path,{method,headers,body:body?JSON.stringify(body):null});
+  const text = await res.text();
+  let data=null; try{ data=text?JSON.parse(text):null; }catch(e){}
+  if(!res.ok) throw new Error((data&&(data.msg||data.error_description||data.message))||'Authentication error');
+  return data;
+}
+async function authSignIn(email,password){
+  AUTH = await authCall('token?grant_type=password','POST',{email,password});
+  return AUTH.user;
+}
+async function authSignUp(email,password){
+  const d = await authCall('signup','POST',{email,password});
+  if(!d||!d.access_token) throw new Error('Registration needs "Confirm email" turned OFF in Supabase (Authentication > Providers > Email).');
+  AUTH = d;
+  return d.user;
+}
+async function authRefresh(){
+  if(!AUTH||!AUTH.refresh_token) return false;
+  try{ AUTH = await authCall('token?grant_type=refresh_token','POST',{refresh_token:AUTH.refresh_token}); return true; }
+  catch(e){ AUTH=null; return false; }
+}
+async function authSignOut(){
+  try{ if(AUTH) await authCall('logout','POST',null,true); }catch(e){}
+  AUTH = null;
+}
+
+async function sb(table, method='GET', body=null, query='', retried=false) {
+  const url = SB_URL + '/rest/v1/' + table + (query ? '?' + query : '');
+  const headers = {
+    'Content-Type': 'application/json',
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + (AUTH ? AUTH.access_token : SB_KEY),
+    'Prefer': method === 'POST' ? 'return=representation' : method === 'PATCH' ? 'return=representation' : ''
+  };
+  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : null });
+  if (res.status === 401 && AUTH && !retried && await authRefresh()) return sb(table, method, body, query, true);
+  if (!res.ok) {
+    const e = await res.text();
+    console.error('Supabase error:', method, table, query, e);
+    throw new Error(e);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// Helper shortcuts
+const SBget  = (t,q='')     => sb(t,'GET',null,q);
+const SBpost = (t,b)        => sb(t,'POST',b);
+const SBpatch= (t,b,q)      => sb(t,'PATCH',b,q);
+const SBdel  = (t,q)        => sb(t,'DELETE',null,q);
+
+function today(){return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function showLoading(msg='Loading…'){
+  let el=document.getElementById('global-loader');
+  if(!el){el=document.createElement('div');el.id='global-loader';el.style.cssText='position:fixed;inset:0;background:rgba(26,61,43,.55);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)';el.innerHTML='<div style="background:#fff;border-radius:12px;padding:24px 36px;font-family:Inter,sans-serif;font-size:.9rem;color:#1a3d2b;box-shadow:0 8px 32px rgba(0,0,0,.2);display:flex;align-items:center;gap:12px"><div style="width:20px;height:20px;border:2px solid #c8e0d0;border-top-color:#2d7a4f;border-radius:50%;animation:spin .8s linear infinite"></div><span id="loader-msg">Loading…</span></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';document.body.appendChild(el);}
+  document.getElementById('loader-msg').textContent=msg;
+  el.style.display='flex';
+}
+function hideLoading(){const el=document.getElementById('global-loader');if(el)el.style.display='none';}
+
+let CS = null;      // current student object
+let adminIn = false;
+let modalSid = null;
+let uploadCode = null;
+let pendingFile = null;
+let pendingSubFile = null;
+let pendingPosImg = null;
+let posDocStaging = [];
+let pendingPhoto = null;
+let COURSES_CACHE = {};
+let SETTINGS_CACHE = {require_photo:'false', default_dl:'view'};
+
+/* ═══════════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════════ */
+window.onload = async () => {
+  showLoading('Connecting to database…');
+  try {
+    await fetch(SB_URL+'/rest/v1/',{headers:{apikey:SB_KEY}}); // connectivity check
+    hideLoading();
+    go('register');
+  } catch(e) {
+    hideLoading();
+    alert('Cannot connect to database. Check your internet connection.\n\n'+e.message);
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════════ */
+function go(scr){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+scr).classList.add('active');
+  window.scrollTo(0,0);
+}
+function switchTab(name,btn){
+  document.querySelectorAll('.psec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('psec-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='lectures')    renderPortalLectures();
+  if(name==='practical')   renderPortalPractical();
+  if(name==='grades')      renderPortalGrades();
+  if(name==='announcements') renderPortalAnn();
+  if(name==='positions')   renderPortalPos();
+  if(name==='tests')       renderPortalTests();
+  if(name==='settings')    renderStudentSettings();
+}
+function aTab(name,btn){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.side-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('atab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='grades')   renderAdminGrades();
+  if(name==='settings') renderAdminSettings();
+  if(name==='pending')  renderAdmin();
+  if(name==='students') renderAdmin();
+  if(name==='courses')  renderAdminCourses();
+  if(name==='announcements') renderAnnList();
+  if(name==='positions') renderPosList();
+  if(name==='tests')     renderAdminTests();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SETUP — Professor first-time account creation
+═══════════════════════════════════════════════════════════ */
+async function doSetup(){
+  // The professor account is now created in Supabase: Authentication > Users.
+  go('register');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REGISTER
+═══════════════════════════════════════════════════════════ */
+async function doRegister(){
+  const fn=v('r-fn'), ln=v('r-ln'), email=v('r-email').toLowerCase(), sid=v('r-sid');
+  const level=v('r-level'), dept=v('r-dept'), pw=v('r-pw'), pw2=v('r-pw2');
+  hide('reg-ok'); hide('reg-err');
+  if(!fn||!ln||!email||!sid||!level||!pw) return err('reg-err','Fill all required fields.');
+  if(pw!==pw2) return err('reg-err','Passwords do not match.');
+  if(pw.length<6) return err('reg-err','Password too short (min 6).');
+  showLoading('Registering…');
+  try {
+    const user = await authSignUp(email,pw);
+    const cardNum = '2026-NANO-' + String(Date.now()).slice(-7);
+    const newStudent = await SBpost('students', {
+      auth_id: user.id, fn, ln, email, sid,
+      level, dept: dept||'Nanotechnology & Material Science',
+      status:'pending', courses: [], card_num: cardNum,
+      photo: null, acknowledged: []
+    });
+    hideLoading();
+    CS = newStudent[0];
+    set('pending-email', CS.email);
+    ok('reg-ok','Registration submitted! Awaiting professor approval.');
+    setTimeout(()=>go('pending'), 1800);
+  } catch(e) {
+    hideLoading();
+    AUTH=null;
+    let m=e.message||'';
+    if(/already registered|already been registered/i.test(m)) m='Account already exists with this email.';
+    else if(/duplicate|unique/i.test(m)) m='This student ID is already registered.';
+    err('reg-err','Registration failed: '+m);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STUDENT LOGIN
+═══════════════════════════════════════════════════════════ */
+async function doLogin(){
+  const u=v('l-u').toLowerCase(), pw=v('l-pw');
+  hide('login-err');
+  if(!u.includes('@')) return err('login-err','Please sign in with your email address.');
+  showLoading('Signing in…');
+  try {
+    let user;
+    try{ user = await authSignIn(u,pw); }
+    catch(e){ hideLoading(); return err('login-err','Incorrect credentials.'); }
+    const results = await SBget('students', 'select=*&auth_id=eq.'+user.id);
+    if(!results||results.length===0) { await authSignOut(); hideLoading(); return err('login-err','No student account found for this login.'); }
+    const s = results[0];
+    CS = s;
+    if(s.status==='pending') { hideLoading(); set('pending-email',s.email); return go('pending'); }
+    if(s.status==='rejected') { await authSignOut(); CS=null; hideLoading(); return err('login-err','Application not approved. Contact Prof. Zerrouki.'); }
+    const sets = await SBget('settings','select=key,value');
+    if(sets) sets.forEach(r=>SETTINGS_CACHE[r.key]=r.value);
+    hideLoading();
+    if(SETTINGS_CACHE.require_photo==='true' && !s.photo) { return go('photo'); }
+    await launchPortal();
+  } catch(e) {
+    hideLoading();
+    err('login-err','Login error: '+e.message);
+  }
+}
+async function doSLogout(){ await authSignOut(); CS=null; go('login'); }
+
+/* ═══════════════════════════════════════════════════════════
+   PHOTO
+═══════════════════════════════════════════════════════════ */
+function onPhotoSelected(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>2*1024*1024){ alert('Max 2MB.'); return; }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingPhoto=e.target.result;
+    document.getElementById('photo-preview-img').src=pendingPhoto;
+    document.getElementById('photo-preview-img').style.display='block';
+    document.getElementById('photo-placeholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+async function savePhoto(){
+  hide('photo-err');
+  if(!pendingPhoto) return err('photo-err','Please select a photo first.');
+  showLoading('Saving photo…');
+  try {
+    const updated = await SBpatch('students', {photo: pendingPhoto}, `id=eq.${CS.id}`);
+    CS = updated[0];
+    hideLoading();
+    await launchPortal();
+  } catch(e) { hideLoading(); err('photo-err','Error: '+e.message); }
+}
+async function skipPhoto(){
+  if(SETTINGS_CACHE.require_photo==='true' && !CS.photo){
+    if(!confirm('A profile photo is required. Skip anyway?')) return;
+  }
+  await launchPortal();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL LAUNCH
+═══════════════════════════════════════════════════════════ */
+async function launchPortal(){
+  showLoading('Loading portal…');
+  try {
+    // refresh student
+    const fresh = await SBget('students','select=*&id=eq.'+CS.id);
+    if(fresh&&fresh.length) CS=fresh[0];
+    // cache courses
+    const clist = await SBget('courses','select=*');
+    COURSES_CACHE={};
+    if(clist) clist.forEach(c=>COURSES_CACHE[c.code]=c);
+    hideLoading();
+    set('portal-chip', CS.fn);
+    set('p-name', CS.fn+' '+CS.ln);
+    set('p-email', CS.email);
+    set('p-card', CS.card_num);
+    set('p-lvl', CS.level);
+    const photoWrap=document.getElementById('idc-photo-wrap');
+    if(CS.photo){
+      photoWrap.innerHTML=`<img class="idc-photo" src="${CS.photo}" alt="photo">`;
+    } else {
+      const ini=(CS.fn[0]+(CS.ln[0]||'')).toUpperCase();
+      photoWrap.innerHTML=`<div class="idc-photo-placeholder">${ini}</div>`;
+    }
+    await renderPortalLectures();
+    await renderNotifications();
+    go('portal');
+  } catch(e) {
+    hideLoading();
+    alert('Error loading portal: '+e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════════════════ */
+async function pushNotif(studentId, title){
+  try {
+    await SBpost('notifications', {student_id: studentId, title, is_read:false, notif_date: today()});
+    if(CS && CS.id===studentId) await renderNotifications();
+  } catch(e){ console.error('notif error',e); }
+}
+async function renderNotifications(){
+  if(!CS) return;
+  try {
+    const notifs = await SBget('notifications', `select=*&student_id=eq.${CS.id}&order=created_at.desc&limit=20`);
+    const unread = (notifs||[]).filter(n=>!n.is_read).length;
+    const badge=document.getElementById('notif-badge');
+    if(badge){ badge.textContent=unread; badge.style.display=unread>0?'flex':'none'; }
+    const list=document.getElementById('notif-list');
+    if(!list) return;
+    if(!notifs||!notifs.length){ list.innerHTML='<div class="notif-empty">No notifications yet.</div>'; return; }
+    list.innerHTML=notifs.map(n=>`
+      <div class="notif-item ${n.is_read?'':'unread'}" onclick="markNotifRead('${n.id}')">
+        <div class="notif-item-body">
+          <div class="notif-item-title">${esc(n.title)}</div>
+          <div class="notif-item-time">${n.notif_date||''}</div>
+        </div>
+      </div>`).join('');
+    // ann unread count
+    const anns = await SBget('announcements',`select=id,levels&order=created_at.desc`);
+    const ack = CS.acknowledged||[];
+    const annUnread=(anns||[]).filter(a=>{
+      const lvl=a.levels||[];
+      return (lvl.includes('All')||lvl.includes(CS.level)) && !ack.includes('ann_'+a.id);
+    }).length;
+    const ab=document.getElementById('ann-unread-badge');
+    if(ab){ab.textContent=annUnread;ab.style.display=annUnread>0?'inline':'none';}
+  } catch(e){ console.error(e); }
+}
+async function markNotifRead(nid){
+  await SBpatch('notifications',{is_read:true},'id=eq.'+nid);
+  await renderNotifications();
+}
+async function markAllRead(e){
+  e.stopPropagation();
+  await SBpatch('notifications',{is_read:true},`student_id=eq.${CS.id}&is_read=eq.false`);
+  await renderNotifications();
+}
+function toggleNotif(e){
+  e.stopPropagation();
+  document.getElementById('notif-dropdown').classList.toggle('open');
+}
+document.addEventListener('click',()=>{
+  const dd=document.getElementById('notif-dropdown');
+  if(dd) dd.classList.remove('open');
+});
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — LECTURES
+═══════════════════════════════════════════════════════════ */
+async function renderPortalLectures(){
+  const el=document.getElementById('p-lectures'); if(!el) return;
+  const courses=CS.courses||[];
+  if(!courses.length){ el.innerHTML='<div class="empty"><div class="empty-ico">📭</div><p>No courses assigned yet.</p></div>'; return; }
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading lectures…</div>';
+  try {
+    const files = await SBget('files', `select=*&course_code=in.(${courses.join(',')})&order=sort_order.asc,created_at.asc`);
+    const ack = CS.acknowledged||[];
+    let html='';
+    courses.forEach(code=>{
+      const c=COURSES_CACHE[code]; if(!c||c.hidden) return;
+      const cfiles=(files||[]).filter(f=>f.course_code===code && f.type!=='practical');
+      const req=cfiles.filter(f=>f.obligation==='required');
+      const ackCount=req.filter(f=>ack.includes(code+'_'+f.id)).length;
+      const pct=req.length?Math.round(ackCount/req.length*100):100;
+      html+=`<div class="lec-course-block">
+        <div class="lec-course-title">
+          <div><div class="lec-code">${code}</div><div class="lec-name">${esc(c.name)}</div></div>
+          <div class="lec-sched">${esc(c.schedule||'')} · ${c.level} · ${c.credits||'?'} cr.</div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-lbl"><span>Required reading progress</span><span>${ackCount}/${req.length} acknowledged</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      if(!cfiles.length){
+        html+='<div class="lec-empty">No lecture files uploaded yet.</div>';
+      } else {
+        cfiles.forEach(f=>{
+          const ico=f.ext==='pdf'?'📄':'🌐';
+          const isAck=ack.includes(code+'_'+f.id);
+          const isReq=f.obligation==='required';
+          const dlBtn=f.download==='download'?`<button class="ab ab-dl" style="font-size:.5rem" onclick="event.stopPropagation();downloadFile('${f.id}')">↓</button>`:'';
+          html+=`<div class="mini-preview-card" onclick="viewFile('${f.id}')">
+            <div class="mini-file-ico ${f.ext==='pdf'?'mini-ico-pdf':'mini-ico-html'}">${ico}</div>
+            <div class="mini-file-body">
+              <div class="mini-file-title">${esc(f.title)}</div>
+              <div class="mini-file-meta">
+                <span class="bdg ${f.ext==='pdf'?'bdg-pdf':'bdg-html'}">${f.ext.toUpperCase()}</span>
+                <span class="bdg ${isReq?'bdg-req':'bdg-opt'}">${isReq?'Required':'Optional'}</span>
+                <span>${f.upload_date||''}</span>
+                ${isAck?'<span class="mini-ack-badge">✓ Acknowledged</span>':''}
+              </div>
+            </div>
+            <div class="mini-file-actions">
+              <button class="ab ab-view" style="font-size:.5rem" onclick="event.stopPropagation();viewFile('${f.id}')">View</button>
+              ${dlBtn}
+              ${isReq&&!isAck?`<button class="ab ab-ok" style="font-size:.5rem" onclick="event.stopPropagation();acknowledgeFile('${code}','${f.id}')">✓ Ack</button>`:''}
+            </div>
+          </div>`;
+        });
+      }
+      html+='</div>';
+    });
+    el.innerHTML=html||'<div class="empty"><div class="empty-ico">📚</div><p>No visible courses.</p></div>';
+  } catch(e){ el.innerHTML='<div class="empty"><p>Error loading: '+e.message+'</p></div>'; }
+}
+
+// All files are stored with ID in Supabase — fetch when needed
+let FILE_CACHE={};
+async function getFile(fid){
+  if(FILE_CACHE[fid]) return FILE_CACHE[fid];
+  const res=await SBget('files','select=*&id=eq.'+fid);
+  if(res&&res.length){ FILE_CACHE[fid]=res[0]; return res[0]; }
+  return null;
+}
+
+async function acknowledgeFile(code,fid){
+  const ack=CS.acknowledged||[];
+  const key=code+'_'+fid;
+  if(!ack.includes(key)) ack.push(key);
+  const updated=await SBpatch('students',{acknowledged:ack},'id=eq.'+CS.id);
+  if(updated&&updated.length) CS=updated[0];
+  renderPortalLectures();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — PRACTICAL
+═══════════════════════════════════════════════════════════ */
+async function renderPortalPractical(){
+  const el=document.getElementById('p-practical'); if(!el) return;
+  const courses=CS.courses||[];
+  if(!courses.length){ el.innerHTML='<div class="empty"><div class="empty-ico">🧪</div><p>No courses assigned yet.</p></div>'; return; }
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try {
+    const files=await SBget('files',`select=*&course_code=in.(${courses.join(',')})&type=eq.practical&order=sort_order.asc`);
+    const subs=await SBget('submissions',`select=*&student_id=eq.${CS.id}`);
+    if(!files||!files.length){ el.innerHTML='<div class="empty"><div class="empty-ico">🧪</div><p>No practical sessions yet.</p></div>'; return; }
+    let html='<div class="pw-grid">';
+    let i=0;
+    files.forEach(f=>{
+      i++;
+      const sub=(subs||[]).find(s=>s.file_id===f.id);
+      const subStatus=sub?sub.status:'none';
+      const subBadge=`<span class="pw-submit-status pws-${subStatus}">${subStatus==='none'?'Not submitted':subStatus==='submitted'?'Submitted':subStatus==='received'?'Received':'✓ Graded'}</span>`;
+      const cdHtml=deadlineHtml(f.deadline);
+      html+=`<div class="pw-card">
+        <div class="pw-num">${f.course_code} · TP ${String(i).padStart(2,'0')}</div>
+        <div class="pw-title">${esc(f.title)}</div>
+        <div class="pw-desc">${esc(f.description||'Practical session')}</div>
+        ${cdHtml}
+        <div class="pw-foot">
+          ${subBadge}
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="ab ab-view" style="font-size:.5rem" onclick="viewFile('${f.id}')">View</button>
+            ${f.download==='download'?`<button class="ab ab-dl" style="font-size:.5rem" onclick="downloadFile('${f.id}')">↓</button>`:''}
+            ${subStatus==='none'||subStatus==='submitted'?`<button class="ab ab-ok" style="font-size:.5rem" onclick="openSubmitModal('${f.id}','${jsq(f.course_code)}','${jsq(f.title)}')">📤 Submit</button>`:''}
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+    el.innerHTML=html;
+  } catch(e){ el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>'; }
+}
+
+function deadlineHtml(dl){
+  if(!dl) return '';
+  const d=new Date(dl),diff=Math.ceil((d-new Date())/(1000*60*60*24));
+  if(isNaN(diff)) return `<span class="pw-countdown cd-ok">${dl}</span>`;
+  if(diff<0) return '<span class="pw-countdown cd-done">Deadline passed</span>';
+  if(diff<=3) return `<span class="pw-countdown cd-urgent">🔴 ${diff} day${diff===1?'':'s'} remaining</span>`;
+  if(diff<=7) return `<span class="pw-countdown cd-soon">🟡 ${diff} days remaining</span>`;
+  return `<span class="pw-countdown cd-ok">🟢 ${diff} days remaining</span>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SUBMIT PRACTICAL
+═══════════════════════════════════════════════════════════ */
+function openSubmitModal(fid,code,title){
+  document.getElementById('sm-fid').value=fid;
+  document.getElementById('sm-code').value=code;
+  set('submit-modal-title','Submit: '+title);
+  document.getElementById('submit-modal-desc').textContent=code+' — upload your completed report';
+  clearSubFile();
+  document.getElementById('modal-submit').classList.add('open');
+}
+function onSubFileSelected(input){
+  const file=input.files[0]; if(!file) return;
+  pendingSubFile={name:file.name};
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingSubFile.dataUrl=e.target.result;
+    document.getElementById('sub-prev-name').textContent=file.name;
+    document.getElementById('sub-preview').style.display='flex';
+    document.getElementById('sub-drop-zone').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function clearSubFile(){
+  pendingSubFile=null;
+  const inp=document.getElementById('sub-file'); if(inp) inp.value='';
+  const prev=document.getElementById('sub-preview'); if(prev) prev.style.display='none';
+  const dz=document.getElementById('sub-drop-zone'); if(dz) dz.style.display='block';
+}
+async function submitPractical(){
+  hide('sub-err');
+  const fid=v('sm-fid'), code=v('sm-code');
+  if(!pendingSubFile) return err('sub-err','Please select a file first.');
+  showLoading('Submitting…');
+  try {
+    const existing=await SBget('submissions',`select=id&student_id=eq.${CS.id}&file_id=eq.${fid}`);
+    if(existing&&existing.length>0){
+      await SBpatch('submissions',{file_name:pendingSubFile.name,data_url:pendingSubFile.dataUrl,status:'submitted',submit_date:today()},`student_id=eq.${CS.id}&file_id=eq.${fid}`);
+    } else {
+      await SBpost('submissions',{student_id:CS.id,course_code:code,file_id:fid,file_name:pendingSubFile.name,data_url:pendingSubFile.dataUrl,status:'submitted',submit_date:today()});
+    }
+    hideLoading();
+    closeModal('modal-submit'); clearSubFile();
+    await renderPortalPractical();
+    alert('✓ Report submitted successfully!');
+  } catch(e){ hideLoading(); err('sub-err','Error: '+e.message); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — GRADES
+═══════════════════════════════════════════════════════════ */
+async function renderPortalGrades(){
+  const el=document.getElementById('p-grades'); if(!el) return;
+  const courses=CS.courses||[];
+  if(!courses.length){ el.innerHTML='<div class="empty"><div class="empty-ico">📊</div><p>No courses assigned.</p></div>'; return; }
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading grades…</div>';
+  try {
+    const grades=await SBget('grades',`select=*&student_sid=eq.${encodeURIComponent(CS.sid)}`);
+    let html='<div class="grades-grid">';
+    courses.forEach(code=>{
+      const c=COURSES_CACHE[code]; if(!c) return;
+      const g=(grades||[]).find(x=>x.course_code===code);
+      const score=g?g.score:null;
+      const max=g?g.max_score:20;
+      const pct=score!=null?score/max:null;
+      const cls=pct==null?'none':pct>=0.85?'excellent':pct>=0.7?'good':pct>=0.5?'average':'poor';
+      html+=`<div class="grade-card">
+        <div class="grade-code">${code}</div>
+        <div class="grade-name">${esc(c.name)}</div>
+        <div class="grade-score ${cls}">${score!=null?score:'—'}</div>
+        <div class="grade-max">out of ${max}</div>
+        ${g&&g.comment?`<div class="grade-comment">"${esc(g.comment)}"</div>`:''}
+        ${g?`<div style="font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--muted2);margin-top:6px">${g.graded_date||''}</div>`:'<div style="font-size:.72rem;color:var(--muted2);margin-top:8px">Not graded yet</div>'}
+      </div>`;
+    });
+    html+='</div>';
+    el.innerHTML=html;
+  } catch(e){ el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>'; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — ANNOUNCEMENTS
+═══════════════════════════════════════════════════════════ */
+async function renderPortalAnn(){
+  const el=document.getElementById('p-announcements'); if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try {
+    const anns=await SBget('announcements','select=*&order=created_at.desc');
+    const filtered=(anns||[]).filter(a=>{
+      const lvl=a.levels||[];
+      return lvl.includes('All')||lvl.includes(CS.level);
+    });
+    if(!filtered.length){ el.innerHTML='<div class="empty"><div class="empty-ico">📢</div><p>No announcements yet.</p></div>'; return; }
+    const ack=CS.acknowledged||[];
+    el.innerHTML=`<div class="ann-list">${filtered.map(a=>{
+      const isRead=ack.includes('ann_'+a.id);
+      const lvTags=(a.levels||[]).map(l=>`<span class="lv ${l==='All'?'lv-all':l==='BSc'?'lv-bsc':l==='MSc'?'lv-msc':'lv-phd'}">${l}</span>`).join('');
+      return `<div class="ann ${isRead?'':'unread'}">
+        <div class="ann-head"><div class="ann-title-text">${esc(a.title)}</div><div class="ann-meta">${lvTags}<span class="ann-date">${a.pub_date||''}</span></div></div>
+        <div class="ann-body">${esc(a.body)}</div>
+        ${!isRead?`<div class="ann-actions"><button class="ab ab-ok" style="font-size:.5rem" onclick="markAnnRead('${a.id}')">✓ Mark as read</button></div>`:''}
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e){ el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>'; }
+}
+async function markAnnRead(aid){
+  const ack=CS.acknowledged||[];
+  if(!ack.includes('ann_'+aid)) ack.push('ann_'+aid);
+  const updated=await SBpatch('students',{acknowledged:ack},'id=eq.'+CS.id);
+  if(updated&&updated.length) CS=updated[0];
+  renderPortalAnn(); renderNotifications();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — POSITIONS
+═══════════════════════════════════════════════════════════ */
+async function renderPortalPos(){
+  const el=document.getElementById('p-positions'); if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try {
+    const poss=await SBget('positions','select=*&order=created_at.desc');
+    const filtered=(poss||[]).filter(p=>{
+      const lvl=p.levels||[];
+      return lvl.includes('All')||lvl.includes(CS.level);
+    });
+    if(!filtered.length){ el.innerHTML='<div class="empty"><div class="empty-ico">🔬</div><p>No open positions yet.</p></div>'; return; }
+    el.innerHTML=`<div class="pos-grid">${filtered.map(p=>{
+      const lvTags=(p.levels||[]).map(l=>`<span class="lv ${l==='All'?'lv-all':l==='BSc'?'lv-bsc':l==='MSc'?'lv-msc':'lv-phd'}">${l}</span>`).join('');
+      const dlStyle=deadlinePosStyle(p.deadline);
+      const imgHtml=p.image?`<img class="pos-card-img" src="${p.image}" alt="Position">`:`<div style="height:6px;background:linear-gradient(90deg,var(--green2),var(--green3))"></div>`;
+      const docs=p.docs||[];
+      const docsHtml=docs.length?`<div class="pos-attachments">${docs.map(d=>`
+        <div class="pos-att-file" onclick="viewPosDocData('${p.id}','${d.id}')">
+          <span>${d.ext==='pdf'?'📄':'🌐'}</span>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.label||d.name)}</span>
+          <span class="bdg ${d.ext==='pdf'?'bdg-pdf':'bdg-html'}">${d.ext.toUpperCase()}</span>
+          <span class="bdg ${d.download==='download'?'bdg-dl':'bdg-locked'}">${d.download==='download'?'↓ DL':'View'}</span>
+        </div>`).join('')}</div>`:'';
+      return `<div class="pos-card">
+        ${imgHtml}
+        <div class="pos-body">
+          <div class="pos-type-row"><span class="pos-type-badge">${esc(p.type)}</span>${lvTags}</div>
+          <div class="pos-title-text">${esc(p.title)}</div>
+          <div class="pos-desc-text">${esc(p.body)}</div>
+          ${docsHtml}
+          <div class="pos-foot">
+            <span class="pos-deadline ${dlStyle}">${p.deadline?'📅 '+esc(p.deadline):''}</span>
+            ${p.contact?`<button class="ab ab-ok" style="font-size:.5rem" onclick="alert('Send CV to: ${jsq(p.contact)}')">Apply →</button>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e){ el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>'; }
+}
+function deadlinePosStyle(dl){
+  if(!dl) return 'dl-ok';
+  const diff=Math.ceil((new Date(dl)-new Date())/(1000*60*60*24));
+  if(isNaN(diff)||diff<0) return 'dl-ok';
+  if(diff<=3) return 'dl-urgent';
+  if(diff<=7) return 'dl-soon';
+  return 'dl-ok';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTAL — SETTINGS
+═══════════════════════════════════════════════════════════ */
+function renderStudentSettings(){
+  const el=document.getElementById('p-settings'); if(!el) return;
+  el.innerHTML=`
+    <div class="settings-section">
+      <h3>Profile Photo</h3><p>Update your profile photo shown on your ID card.</p>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div class="photo-drop" style="width:80px;height:80px;flex-shrink:0">
+          <input type="file" accept="image/*" onchange="updateStudentPhoto(this)">
+          ${CS.photo?`<img src="${CS.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<div style="font-size:.7rem;color:var(--muted);text-align:center;padding:6px">📷 Upload</div>`}
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.7">Click the circle to upload. JPG or PNG, max 2MB.</div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h3>Change Password</h3><p>Update your login password.</p>
+      <div class="alert alert-err" id="stg-pw-err"></div>
+      <div class="alert alert-ok" id="stg-pw-ok"></div>
+      <div class="form-row">
+        <div class="field"><label class="fl">New Password</label><input class="fi" id="stg-pw" type="password" placeholder="••••••••"></div>
+        <div class="field"><label class="fl">Confirm</label><input class="fi" id="stg-pw2" type="password" placeholder="••••••••"></div>
+      </div>
+      <button class="ab ab-save" onclick="changePassword()">✓ Update Password</button>
+    </div>
+    <div class="settings-section">
+      <h3>My Details</h3>
+      <div class="t-wrap"><table class="tbl">
+        <tr><td class="tsub" style="width:140px">Full Name</td><td class="tt">${esc(CS.fn)} ${esc(CS.ln)}</td></tr>
+        <tr><td class="tsub">Email</td><td>${esc(CS.email)}</td></tr>
+        <tr><td class="tsub">Student ID</td><td class="tc">${esc(CS.sid)}</td></tr>
+        <tr><td class="tsub">Card Number</td><td class="tc">${esc(CS.card_num)}</td></tr>
+        <tr><td class="tsub">Level</td><td><span class="lv lv-${CS.level.toLowerCase()}">${CS.level}</span></td></tr>
+        <tr><td class="tsub">Department</td><td style="font-size:.82rem">${esc(CS.dept)}</td></tr>
+      </table></div>
+    </div>`;
+}
+async function updateStudentPhoto(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>2*1024*1024){alert('Max 2MB.');return;}
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    showLoading('Saving photo…');
+    try{
+      const updated=await SBpatch('students',{photo:e.target.result},'id=eq.'+CS.id);
+      if(updated&&updated.length) CS=updated[0];
+      hideLoading();
+      renderStudentSettings();
+      const photoWrap=document.getElementById('idc-photo-wrap');
+      if(photoWrap) photoWrap.innerHTML=`<img class="idc-photo" src="${CS.photo}" alt="photo">`;
+    }catch(e){hideLoading();alert('Error: '+e.message);}
+  };
+  reader.readAsDataURL(file);
+}
+async function changePassword(){
+  hide('stg-pw-err'); hide('stg-pw-ok');
+  const pw=document.getElementById('stg-pw')?.value;
+  const pw2=document.getElementById('stg-pw2')?.value;
+  if(!pw||pw.length<6) return err('stg-pw-err','Password too short (min 6).');
+  if(pw!==pw2) return err('stg-pw-err','Passwords do not match.');
+  showLoading('Updating…');
+  try{
+    await authCall('user','PUT',{password:pw},true);
+    hideLoading();
+    ok('stg-pw-ok','Password updated successfully.');
+  }catch(e){hideLoading();err('stg-pw-err','Error: '+e.message);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN LOGIN
+═══════════════════════════════════════════════════════════ */
+async function doAdminLogin(){
+  const u=v('adm-u').toLowerCase(), pw=v('adm-pw');
+  hide('adm-err');
+  showLoading('Signing in…');
+  try{
+    let user;
+    try{ user = await authSignIn(u,pw); }
+    catch(e){ hideLoading(); return err('adm-err','Incorrect credentials.'); }
+    const prof=await SBget('professor','select=id,name,email&auth_id=eq.'+user.id);
+    if(!prof||!prof.length){ await authSignOut(); hideLoading(); return err('adm-err','This account is not the professor account.'); }
+    const p=prof[0];
+    adminIn=true;
+    set('adm-chip',p.name.split(' ').slice(-1)[0]);
+    await renderAdmin();
+    hideLoading();
+    go('admin');
+  }catch(e){hideLoading();err('adm-err','Error: '+e.message);}
+}
+async function doAdminLogout(){await authSignOut();adminIn=false;go('admin-login');}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN RENDER
+═══════════════════════════════════════════════════════════ */
+async function renderAdmin(){
+  showLoading('Loading dashboard…');
+  try{
+    const [students,courses,anns,poss]=await Promise.all([
+      SBget('students','select=*&order=created_at.asc'),
+      SBget('courses','select=*&order=created_at.asc'),
+      SBget('announcements','select=id'),
+      SBget('positions','select=id')
+    ]);
+    COURSES_CACHE={};
+    (courses||[]).forEach(c=>COURSES_CACHE[c.code]=c);
+    const pending=(students||[]).filter(s=>s.status==='pending');
+    const active=(students||[]).filter(s=>s.status==='active');
+    const rejected=(students||[]).filter(s=>s.status==='rejected');
+    set('cnt-pending',pending.length); set('cnt-students',active.length);
+    document.getElementById('adm-stats').innerHTML=`
+      <div class="stat-card"><div class="stat-n">${pending.length}</div><div class="stat-l">Pending</div></div>
+      <div class="stat-card"><div class="stat-n">${active.length}</div><div class="stat-l">Active</div></div>
+      <div class="stat-card"><div class="stat-n">${rejected.length}</div><div class="stat-l">Rejected</div></div>
+      <div class="stat-card"><div class="stat-n">${(courses||[]).length}</div><div class="stat-l">Courses</div></div>
+      <div class="stat-card"><div class="stat-n">${(anns||[]).length+(poss||[]).length}</div><div class="stat-l">Published</div></div>`;
+
+    // PENDING
+    const pl=document.getElementById('adm-pending-list');
+    if(pl) pl.innerHTML=!pending.length?'<div class="empty"><div class="empty-ico">✅</div><p>No pending registrations.</p></div>'
+      :`<div class="t-wrap"><table class="tbl"><thead><tr><th></th><th>Student</th><th>ID</th><th>Card</th><th>Level</th><th>Dept</th><th>Action</th></tr></thead><tbody>
+      ${pending.map(s=>`<tr>
+        <td>${s.photo?`<img class="stu-av" src="${s.photo}">`:`<div class="stu-av-placeholder">${(s.fn[0]+s.ln[0]).toUpperCase()}</div>`}</td>
+        <td><div class="tt">${esc(s.fn)} ${esc(s.ln)}</div><div class="tsub">${esc(s.email)}</div></td>
+        <td><div class="tc">${esc(s.sid)}</div></td><td><div class="tc">${esc(s.card_num)}</div></td>
+        <td><span class="lv lv-${s.level.toLowerCase()}">${s.level}</span></td>
+        <td style="font-size:.78rem;color:var(--muted)">${esc(s.dept)}</td>
+        <td><button class="ab ab-ok" onclick="openAssign('${s.id}')">✓ Review</button></td>
+      </tr>`).join('')}</tbody></table></div>`;
+
+    // ALL STUDENTS
+    const sl=document.getElementById('adm-students-list');
+    if(sl) sl.innerHTML=!(students||[]).length?'<div class="empty"><div class="empty-ico">👥</div><p>No students yet.</p></div>'
+      :`<div class="t-wrap"><table class="tbl"><thead><tr><th></th><th>Student</th><th>Card</th><th>Level</th><th>Status</th><th>Courses</th><th>Actions</th></tr></thead><tbody>
+      ${(students||[]).map(s=>`<tr>
+        <td>${s.photo?`<img class="stu-av" src="${s.photo}">`:`<div class="stu-av-placeholder">${(s.fn[0]+s.ln[0]).toUpperCase()}</div>`}</td>
+        <td><div class="tt">${esc(s.fn)} ${esc(s.ln)}</div><div class="tsub">${esc(s.email)}</div></td>
+        <td><div class="tc">${esc(s.card_num)}</div></td>
+        <td><span class="lv lv-${s.level.toLowerCase()}">${s.level}</span></td>
+        <td><span class="sp sp-${s.status}">${s.status}</span></td>
+        <td style="font-size:.72rem;color:var(--muted)">${(s.courses||[]).join(', ')||'—'}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="ab ab-edit" style="font-size:.49rem" onclick="openAssign('${s.id}')">✎</button>
+          <button class="ab ab-rm" style="font-size:.49rem" onclick="rmStudent('${s.id}')">✕</button>
+        </td>
+      </tr>`).join('')}</tbody></table></div>`;
+
+    hideLoading();
+  }catch(e){hideLoading();alert('Dashboard error: '+e.message);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN — COURSES
+═══════════════════════════════════════════════════════════ */
+async function renderAdminCourses(){
+  const cl=document.getElementById('adm-courses-list'); if(!cl) return;
+  try{
+    const [courses,files]=await Promise.all([
+      SBget('courses','select=*&order=created_at.asc'),
+      SBget('files','select=id,course_code,title,type,obligation,download,ext,upload_date&order=sort_order.asc,created_at.asc')
+    ]);
+    COURSES_CACHE={};
+    (courses||[]).forEach(c=>COURSES_CACHE[c.code]=c);
+    if(!courses||!courses.length){cl.innerHTML='<div class="empty"><div class="empty-ico">📋</div><p>No courses yet.</p></div>';return;}
+    cl.innerHTML=`<div class="course-grid">${courses.map(c=>{
+      const cfiles=(files||[]).filter(f=>f.course_code===c.code);
+      const dlCount=cfiles.filter(f=>f.download==='download').length;
+      const filesHtml=!cfiles.length?'<div class="no-files">No files yet</div>'
+        :cfiles.map(f=>`<div class="cc-file" draggable="true" ondragstart="dragSrc='${f.id}';dragCode='${c.code}'" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');reorderFile('${c.code}','${f.id}')" onclick="viewFileAdmin('${f.id}')">
+          <span>${f.ext==='pdf'?'📄':'🌐'}</span>
+          <span class="cc-file-name">${esc(f.title)}</span>
+          <span class="bdg ${f.obligation==='required'?'bdg-req':'bdg-opt'}">${f.obligation==='required'?'Req':'Opt'}</span>
+          <span class="bdg ${f.download==='download'?'bdg-dl':'bdg-locked'}">${f.download==='download'?'↓ DL':'🔒'}</span>
+          <div class="cc-file-actions"><button class="ab ab-rm" style="padding:2px 6px;font-size:.45rem" onclick="event.stopPropagation();deleteFile('${f.id}','${c.code}')">✕</button></div>
+        </div>`).join('');
+      return `<div class="course-card ${c.hidden?'hidden-course':''}">
+        <div class="cc-head">
+          <div><div class="cc-code">${c.code} ${c.hidden?'<span class="bdg" style="background:#f5f5f5;border:1px solid #ccc;color:#888">HIDDEN</span>':''}</div><div class="cc-name">${esc(c.name)}</div></div>
+          <span class="lv lv-${c.level.toLowerCase()}">${c.level}</span>
+        </div>
+        <div class="cc-meta"><span>${c.credits||'?'} cr.</span><span>${c.schedule||'—'}</span><span>${dlCount} downloadable / ${cfiles.length-dlCount} view-only</span></div>
+        <div class="cc-dl-default">
+          <span>Default: ${c.dl_default==='download'?'Allow download':'View only'}</span>
+          <button class="ab ab-rm" style="font-size:.45rem;padding:2px 6px" onclick="toggleCourseDl('${c.code}','${c.dl_default}')">${c.dl_default==='download'?'🔒 Set view-only':'↓ Allow downloads'}</button>
+        </div>
+        <div class="sec-lbl" style="margin-bottom:6px"><span>Files (${cfiles.length})</span></div>
+        <div class="cc-files">${filesHtml}</div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+          <button class="ab ab-gold" onclick="openUpload('${c.code}')">+ Add File</button>
+          <button class="ab ${c.hidden?'ab-ok':'ab-pub'}" onclick="toggleCourseHide('${c.code}','${c.hidden}')">${c.hidden?'👁 Show':'🙈 Hide'}</button>
+          <button class="ab ab-rm" style="font-size:.45rem" onclick="deleteCourse('${c.code}')">✕ Remove</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }catch(e){cl.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>';}
+}
+
+let dragSrc=null, dragCode=null;
+async function reorderFile(code,targetId){
+  if(!dragSrc||dragSrc===targetId||dragCode!==code) return;
+  const files=await SBget('files',`select=id,sort_order&course_code=eq.${code}&order=sort_order.asc,created_at.asc`);
+  const ids=files.map(f=>f.id);
+  const fromIdx=ids.indexOf(dragSrc), toIdx=ids.indexOf(targetId);
+  if(fromIdx<0||toIdx<0) return;
+  ids.splice(fromIdx,1); ids.splice(toIdx,0,dragSrc);
+  await Promise.all(ids.map((id,i)=>SBpatch('files',{sort_order:i},'id=eq.'+id)));
+  dragSrc=null;
+  renderAdminCourses();
+}
+
+async function addCourse(){
+  const code=v('nc-code').toUpperCase(), name=v('nc-name'), level=v('nc-level');
+  const credits=v('nc-credits'), sched=v('nc-sched'), desc=v('nc-desc'), dlDef=document.getElementById('nc-dl-default').value;
+  hide('nc-err');
+  if(!code||!name||!level) return err('nc-err','Code, Name and Level required.');
+  showLoading('Creating course…');
+  try{
+    await SBpost('courses',{code,name,level,credits:credits||'?',schedule:sched,description:desc,dl_default:dlDef,hidden:false});
+    ['nc-code','nc-name','nc-credits','nc-sched','nc-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+    document.getElementById('nc-level').value='';
+    hideLoading();
+    renderAdminCourses();
+  }catch(e){hideLoading();err('nc-err','Error: '+e.message);}
+}
+async function toggleCourseDl(code,current){
+  await SBpatch('courses',{dl_default:current==='download'?'view':'download'},'code=eq.'+code);
+  renderAdminCourses();
+}
+async function toggleCourseHide(code,hidden){
+  const isHidden=(hidden===true||hidden==='true');
+  await SBpatch('courses',{hidden:!isHidden},'code=eq.'+code);
+  renderAdminCourses();
+}
+async function deleteCourse(code){
+  if(!confirm('Remove course '+code+' and all its files?')) return;
+  await SBdel('files','course_code=eq.'+code);
+  await SBdel('courses','code=eq.'+code);
+  // remove from students
+  const students=await SBget('students','select=id,courses');
+  await Promise.all((students||[]).filter(s=>(s.courses||[]).includes(code)).map(s=>
+    SBpatch('students',{courses:(s.courses||[]).filter(c=>c!==code)},'id=eq.'+s.id)
+  ));
+  renderAdminCourses();
+}
+async function deleteFile(fid,code){
+  if(!confirm('Remove this file?')) return;
+  delete FILE_CACHE[fid];
+  await SBdel('files','id=eq.'+fid);
+  renderAdminCourses();
+  if(uploadCode===code) refreshUploadList(code);
+}
+async function viewFileAdmin(fid){ await viewFile(fid); }
+
+/* ═══════════════════════════════════════════════════════════
+   FILE UPLOAD
+═══════════════════════════════════════════════════════════ */
+async function openUpload(code){
+  uploadCode=code;
+  const c=COURSES_CACHE[code];
+  set('upload-title','Add File — '+code);
+  document.getElementById('upload-desc').textContent=(c?c.name:code)+' · '+(c?c.level:'');
+  document.getElementById('uf-title').value='';
+  document.getElementById('uf-type').value='lecture';
+  document.getElementById('uf-obligation').value='required';
+  document.getElementById('uf-download').value=(c&&c.dl_default)||'view';
+  clearFile();
+  await refreshUploadList(code);
+  document.getElementById('modal-upload').classList.add('open');
+}
+async function refreshUploadList(code){
+  const el=document.getElementById('upload-existing'); if(!el) return;
+  try{
+    const files=await SBget('files',`select=id,title,ext,type,obligation,download&course_code=eq.${code}&order=sort_order.asc`);
+    if(!files||!files.length){el.innerHTML='<div class="no-files">No files yet.</div>';return;}
+    el.innerHTML=`<div class="upload-list">${files.map(f=>`
+      <div class="ul-item">
+        <span>${f.ext==='pdf'?'📄':'🌐'}</span>
+        <span class="ul-name">${esc(f.title)} <span style="color:var(--muted2)">(${f.ext.toUpperCase()} · ${f.type} · ${f.obligation} · ${f.download==='download'?'↓ DL':'🔒 view-only'})</span></span>
+        <button class="ul-rm" onclick="deleteFile('${f.id}','${code}')">✕</button>
+      </div>`).join('')}</div>`;
+  }catch(e){el.innerHTML='Error loading files.';}
+}
+function onFileSelected(input){
+  const file=input.files[0]; if(!file) return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['pdf','html','htm'].includes(ext)){alert('Only PDF and HTML files.');clearFile();return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingFile={name:file.name,ext:ext==='htm'?'html':ext,dataUrl:e.target.result};
+    document.getElementById('uf-prev-ico').textContent=ext==='pdf'?'📄':'🌐';
+    document.getElementById('uf-prev-name').textContent=file.name;
+    document.getElementById('uf-preview').style.display='flex';
+    document.getElementById('uf-drop-zone').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function clearFile(){
+  pendingFile=null;
+  const inp=document.getElementById('uf-file'); if(inp) inp.value='';
+  const prev=document.getElementById('uf-preview'); if(prev) prev.style.display='none';
+  const dz=document.getElementById('uf-drop-zone'); if(dz) dz.style.display='block';
+  hide('uf-err');
+}
+async function uploadFile(){
+  hide('uf-err');
+  const title=v('uf-title'), type=document.getElementById('uf-type').value;
+  const obligation=document.getElementById('uf-obligation').value;
+  const download=document.getElementById('uf-download').value;
+  if(!title) return err('uf-err','Enter a file title.');
+  if(!pendingFile) return err('uf-err','Select a file first.');
+  showLoading('Uploading file…');
+  try{
+    const count=await SBget('files',`select=id&course_code=eq.${uploadCode}`);
+    await SBpost('files',{
+      course_code:uploadCode, title, type, obligation, download,
+      ext:pendingFile.ext, data_url:pendingFile.dataUrl,
+      sort_order:(count?count.length:0),
+      upload_date:today()
+    });
+    // notify enrolled active students
+    const students=await SBget('students',`select=id,courses&status=eq.active`);
+    await Promise.all((students||[]).filter(s=>(s.courses||[]).includes(uploadCode))
+      .map(s=>pushNotif(s.id,'New file uploaded in '+uploadCode+': '+title)));
+    hideLoading();
+    clearFile();
+    document.getElementById('uf-title').value='';
+    await refreshUploadList(uploadCode);
+    renderAdminCourses();
+    const btn=document.querySelector('#modal-upload .ab-save');
+    if(btn){btn.textContent='✓ Added!';setTimeout(()=>btn.textContent='✓ Add File',1600);}
+  }catch(e){hideLoading();err('uf-err','Upload error: '+e.message);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILE VIEWER (PDF.js canvas — no download when blocked)
+═══════════════════════════════════════════════════════════ */
+async function viewFile(fid){
+  showLoading('Opening file…');
+  try{
+    const f=await getFile(fid);
+    if(!f){hideLoading();alert('File not found.');return;}
+    set('viewer-title',f.title);
+    document.getElementById('viewer-meta').textContent=(f.course_code||'')+' · '+f.type.toUpperCase()+' · '+(f.upload_date||'');
+    const frame=document.getElementById('viewer-frame');
+    const htmlDiv=document.getElementById('viewer-html-body');
+    hideLoading();
+    if(f.ext==='pdf'){
+      frame.style.display='block'; htmlDiv.style.display='none';
+      // Convert base64 to Blob and render — works on HTTPS (Netlify)
+      try{
+        const b64=f.data_url.split(',')[1];
+        const bin=atob(b64);
+        const bytes=new Uint8Array(bin.length);
+        for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+        const blob=new Blob([bytes],{type:'application/pdf'});
+        const url=URL.createObjectURL(blob);
+        // Disable toolbar when download not allowed
+        frame.src=f.download==='download'?url:url+'#toolbar=0&navpanes=0';
+        // Block right-click and save keyboard shortcuts inside viewer
+        if(f.download!=='download'){
+          document.getElementById('viewer-overlay').oncontextmenu=e=>e.preventDefault();
+        }
+      }catch(e){
+        frame.src=f.data_url;
+      }
+    } else {
+      if(f.download==='download'){ openHtmlInTab(f.data_url.split(',')[1]||''); return; }
+      frame.style.display='none'; htmlDiv.style.display='block';
+      try{htmlDiv.srcdoc=b64ToText(f.data_url.split(',')[1]||'');}
+      catch(e){htmlDiv.srcdoc='<p style="font-family:sans-serif;color:#666">Cannot render this file.</p>';}
+    }
+    document.getElementById('viewer-overlay').classList.add('open');
+  }catch(e){hideLoading();alert('Error opening file: '+e.message);}
+}
+function closeViewer(){
+  document.getElementById('viewer-overlay').classList.remove('open');
+  const frame=document.getElementById('viewer-frame');
+  if(frame.src&&frame.src.startsWith('blob:')) URL.revokeObjectURL(frame.src);
+  frame.src='';
+  document.getElementById('viewer-html-body').srcdoc='';
+  document.getElementById('viewer-overlay').oncontextmenu=null;
+}
+async function downloadFile(fid){
+  const f=await getFile(fid);
+  if(!f||f.download!=='download'){alert('Download not allowed for this file.');return;}
+  const a=document.createElement('a');
+  a.href=f.data_url;
+  a.download=f.title+'.'+(f.ext==='html'?'html':'pdf');
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// Block Ctrl+S, Ctrl+P inside viewer
+document.addEventListener('keydown',e=>{
+  const vo=document.getElementById('viewer-overlay');
+  if(vo&&vo.classList.contains('open')){
+    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='p'||e.key==='u')){
+      e.preventDefault(); return false;
+    }
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   POSITIONS — image & docs
+═══════════════════════════════════════════════════════════ */
+function onPosImgSelected(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>3*1024*1024){alert('Max 3MB.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingPosImg=e.target.result;
+    const preview=document.getElementById('pos-img-preview');
+    preview.src=pendingPosImg; preview.style.display='block';
+    document.getElementById('pos-img-drop').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function onPosDocSelected(input){
+  const file=input.files[0]; if(!file) return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['pdf','html','htm'].includes(ext)){alert('Only PDF and HTML.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    posDocStaging.push({id:Date.now().toString(),name:file.name,label:file.name.replace(/\.[^.]+$/,''),ext:ext==='htm'?'html':ext,dataUrl:e.target.result,download:'view'});
+    renderPosDocStaging(); input.value='';
+  };
+  reader.readAsDataURL(file);
+}
+function renderPosDocStaging(){
+  const el=document.getElementById('pos-doc-staging');
+  if(!posDocStaging.length){el.innerHTML='';return;}
+  el.innerHTML=`<div class="upload-list">${posDocStaging.map((d,i)=>`
+    <div class="ul-item">
+      <span>${d.ext==='pdf'?'📄':'🌐'}</span>
+      <input class="fi" style="flex:1;padding:4px 8px;font-size:.72rem" value="${esc(d.label)}" oninput="posDocStaging[${i}].label=this.value" placeholder="Label">
+      <select class="fi" style="width:130px;padding:4px 6px;font-size:.66rem" onchange="posDocStaging[${i}].download=this.value">
+        <option value="view" ${d.download==='view'?'selected':''}>🔒 View only</option>
+        <option value="download" ${d.download==='download'?'selected':''}>↓ Allow DL</option>
+      </select>
+      <button class="ul-rm" onclick="posDocStaging.splice(${i},1);renderPosDocStaging()">✕</button>
+    </div>`).join('')}</div>`;
+}
+async function viewPosDocData(posId,docId){
+  const poss=await SBget('positions','select=docs&id=eq.'+posId);
+  if(!poss||!poss.length) return;
+  const docs=poss[0].docs||[];
+  const d=docs.find(x=>x.id===docId); if(!d) return;
+  set('viewer-title',d.label||d.name);
+  document.getElementById('viewer-meta').textContent='Position document · '+d.ext.toUpperCase();
+  const frame=document.getElementById('viewer-frame');
+  const htmlDiv=document.getElementById('viewer-html-body');
+  if(d.ext==='pdf'){
+    frame.style.display='block'; htmlDiv.style.display='none';
+    try{
+      const b64=d.dataUrl.split(',')[1];
+      const bin=atob(b64); const bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      const blob=new Blob([bytes],{type:'application/pdf'});
+      frame.src=URL.createObjectURL(blob)+(d.download!=='download'?'#toolbar=0':'');
+    }catch(e){frame.src=d.dataUrl;}
+  }else{
+    if(d.download==='download'){ openHtmlInTab(d.dataUrl.split(',')[1]||''); return; }
+    frame.style.display='none'; htmlDiv.style.display='block';
+    try{htmlDiv.srcdoc=b64ToText(d.dataUrl.split(',')[1]||'');}catch(e){}
+  }
+  document.getElementById('viewer-overlay').classList.add('open');
+}
+
+async function downloadPosDoc(posId,docId){
+  const poss=await SBget('positions','select=docs&id=eq.'+posId);
+  const d=(poss&&poss[0]?poss[0].docs:[]).find(x=>x.id===docId);
+  if(!d||d.download!=='download') return;
+  const a=document.createElement('a');
+  a.href=d.dataUrl; a.download=(d.label||d.name)+'.'+d.ext;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+/* ═══════════════════════════════════════════════════════════
+   ANNOUNCEMENTS
+═══════════════════════════════════════════════════════════ */
+function getChecked(name){return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value);}
+function setChecked(name,vals){document.querySelectorAll(`input[name="${name}"]`).forEach(i=>{i.checked=vals.includes(i.value);});}
+
+async function saveAnn(){
+  hide('ann-err');
+  const title=v('ann-title'), body=v('ann-body'), levels=getChecked('ann-lv'), eid=v('ann-edit-id');
+  if(!title||!body) return err('ann-err','Title and content required.');
+  if(!levels.length) return err('ann-err','Select at least one audience.');
+  showLoading('Publishing…');
+  try{
+    if(eid){
+      await SBpatch('announcements',{title,body,levels,pub_date:today()},'id=eq.'+eid);
+    }else{
+      await SBpost('announcements',{title,body,levels,pub_date:today()});
+      // notify matching active students
+      const students=await SBget('students','select=id,level&status=eq.active');
+      await Promise.all((students||[]).filter(s=>levels.includes('All')||levels.includes(s.level))
+        .map(s=>pushNotif(s.id,'New announcement: '+title)));
+    }
+    hideLoading(); cancelAnnEdit(); renderAnnList();
+  }catch(e){hideLoading();err('ann-err','Error: '+e.message);}
+}
+async function editAnn(id){
+  const res=await SBget('announcements','select=*&id=eq.'+id);
+  if(!res||!res.length) return;
+  const a=res[0];
+  document.getElementById('ann-edit-id').value=id;
+  document.getElementById('ann-title').value=a.title;
+  document.getElementById('ann-body').value=a.body;
+  setChecked('ann-lv',a.levels||[]);
+  set('ann-form-title','✎ Edit Announcement');
+  document.getElementById('ann-cancel-btn').style.display='inline-flex';
+  document.getElementById('atab-announcements').scrollIntoView({behavior:'smooth'});
+}
+async function deleteAnn(id){
+  if(!confirm('Delete this announcement?')) return;
+  await SBdel('announcements','id=eq.'+id); renderAnnList();
+}
+function cancelAnnEdit(){
+  document.getElementById('ann-edit-id').value='';
+  document.getElementById('ann-title').value='';
+  document.getElementById('ann-body').value='';
+  setChecked('ann-lv',['All']);
+  set('ann-form-title','➕ New Announcement');
+  document.getElementById('ann-cancel-btn').style.display='none';
+}
+async function renderAnnList(){
+  const el=document.getElementById('adm-ann-list'); if(!el) return;
+  try{
+    const anns=await SBget('announcements','select=*&order=created_at.desc');
+    if(!anns||!anns.length){el.innerHTML='<div class="empty"><div class="empty-ico">📢</div><p>No announcements yet.</p></div>';return;}
+    el.innerHTML=anns.map(a=>{
+      const lvTags=(a.levels||[]).map(l=>`<span class="lv ${l==='All'?'lv-all':l==='BSc'?'lv-bsc':l==='MSc'?'lv-msc':'lv-phd'}">${l}</span>`).join('');
+      return `<div class="pub-item"><div class="pub-item-head"><div class="pub-item-title">${esc(a.title)}</div><div class="pub-actions"><button class="ab ab-edit" style="font-size:.48rem" onclick="editAnn('${a.id}')">✎</button><button class="ab ab-rm" style="font-size:.48rem" onclick="deleteAnn('${a.id}')">✕</button></div></div><div class="pub-item-body">${esc(a.body)}</div><div class="pub-item-meta">${lvTags}<span class="pub-date">${a.pub_date||''}</span></div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>';}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   POSITIONS
+═══════════════════════════════════════════════════════════ */
+async function savePos(){
+  hide('pos-err');
+  const title=v('pos-title'), body=v('pos-body'), type=document.getElementById('pos-type').value;
+  const deadline=v('pos-deadline'), contact=v('pos-contact'), levels=getChecked('pos-lv'), eid=v('pos-edit-id');
+  if(!title||!body) return err('pos-err','Title and description required.');
+  if(!levels.length) return err('pos-err','Select at least one audience.');
+  showLoading('Publishing…');
+  try{
+    const payload={title,body,type,deadline,contact,levels,pub_date:today(),image:pendingPosImg||null};
+    const fullDocs=posDocStaging.slice();
+    if(eid){
+      await SBpatch('positions',{...payload,docs:fullDocs},'id=eq.'+eid);
+    }else{
+      await SBpost('positions',{...payload,docs:fullDocs});
+      const students=await SBget('students','select=id,level&status=eq.active');
+      await Promise.all((students||[]).filter(s=>levels.includes('All')||levels.includes(s.level))
+        .map(s=>pushNotif(s.id,'New position: '+title)));
+    }
+    hideLoading(); cancelPosEdit(); renderPosList();
+  }catch(e){hideLoading();err('pos-err','Error: '+e.message);}
+}
+async function editPos(id){
+  const res=await SBget('positions','select=*&id=eq.'+id);
+  if(!res||!res.length) return;
+  const p=res[0];
+  document.getElementById('pos-edit-id').value=id;
+  document.getElementById('pos-title').value=p.title;
+  document.getElementById('pos-body').value=p.body;
+  document.getElementById('pos-type').value=p.type;
+  document.getElementById('pos-deadline').value=p.deadline||'';
+  document.getElementById('pos-contact').value=p.contact||'';
+  setChecked('pos-lv',p.levels||[]);
+  if(p.image){
+    pendingPosImg=p.image;
+    const img=document.getElementById('pos-img-preview'); img.src=p.image; img.style.display='block';
+    document.getElementById('pos-img-drop').style.display='none';
+  }
+  posDocStaging=p.docs||[];renderPosDocStaging();
+  set('pos-form-title','✎ Edit Position');
+  document.getElementById('pos-cancel-btn').style.display='inline-flex';
+  document.getElementById('atab-positions').scrollIntoView({behavior:'smooth'});
+}
+async function deletePos(id){
+  if(!confirm('Delete this position?')) return;
+  await SBdel('positions','id=eq.'+id); renderPosList();
+}
+function cancelPosEdit(){
+  document.getElementById('pos-edit-id').value='';
+  document.getElementById('pos-title').value='';
+  document.getElementById('pos-body').value='';
+  document.getElementById('pos-type').value='PhD';
+  document.getElementById('pos-deadline').value='';
+  document.getElementById('pos-contact').value='';
+  setChecked('pos-lv',['All']);
+  const img=document.getElementById('pos-img-preview'); img.style.display='none'; img.src='';
+  document.getElementById('pos-img-drop').style.display='block';
+  pendingPosImg=null; posDocStaging=[]; renderPosDocStaging();
+  set('pos-form-title','➕ New Position');
+  document.getElementById('pos-cancel-btn').style.display='none';
+}
+async function renderPosList(){
+  const el=document.getElementById('adm-pos-list'); if(!el) return;
+  try{
+    const poss=await SBget('positions','select=*&order=created_at.desc');
+    if(!poss||!poss.length){el.innerHTML='<div class="empty"><div class="empty-ico">🔬</div><p>No positions yet.</p></div>';return;}
+    el.innerHTML=poss.map(p=>{
+      const lvTags=(p.levels||[]).map(l=>`<span class="lv ${l==='All'?'lv-all':l==='BSc'?'lv-bsc':l==='MSc'?'lv-msc':'lv-phd'}">${l}</span>`).join('');
+      const hasDocs=(p.docs||[]).length>0;
+      return `<div class="pub-item"><div class="pub-item-head"><div><div class="pub-item-title">${esc(p.title)}</div><div style="font-size:.72rem;color:var(--teal);font-family:'JetBrains Mono',monospace;margin-top:2px">${esc(p.type)} ${p.image?'📷':''} ${hasDocs?'📎'+(p.docs.length)+' doc(s)':''}</div></div><div class="pub-actions"><button class="ab ab-edit" style="font-size:.48rem" onclick="editPos('${p.id}')">✎</button><button class="ab ab-rm" style="font-size:.48rem" onclick="deletePos('${p.id}')">✕</button></div></div><div class="pub-item-body">${esc(p.body.substring(0,140))}${p.body.length>140?'…':''}</div><div class="pub-item-meta">${lvTags}${p.deadline?`<span class="pub-date">📅 ${esc(p.deadline)}</span>`:''}${p.contact?`<span class="pub-date">✉ ${esc(p.contact)}</span>`:''}</div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>';}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GRADES
+═══════════════════════════════════════════════════════════ */
+async function renderAdminGrades(){
+  const el=document.getElementById('adm-grades-content'); if(!el) return;
+  showLoading('Loading grades…');
+  try{
+    const [students,grades]=await Promise.all([
+      SBget('students','select=id,fn,ln,sid,courses,level&status=eq.active'),
+      SBget('grades','select=*')
+    ]);
+    hideLoading();
+    const active=(students||[]).filter(s=>(s.courses||[]).length);
+    if(!active.length){el.innerHTML='<div class="empty"><div class="empty-ico">📊</div><p>No active students with courses.</p></div>';return;}
+    let html='<div class="t-wrap"><table class="tbl"><thead><tr><th>Student</th><th>Course</th><th>Grade</th><th>Comment</th><th>Action</th></tr></thead><tbody>';
+    active.forEach(s=>{
+      (s.courses||[]).forEach(code=>{
+        const c=COURSES_CACHE[code]; if(!c) return;
+        const g=(grades||[]).find(x=>x.student_sid===s.sid&&x.course_code===code);
+        html+=`<tr>
+          <td><div class="tt">${esc(s.fn)} ${esc(s.ln)}</div><div class="tsub">${esc(s.sid)}</div></td>
+          <td><div class="tc">${code}</div><div class="tsub">${esc(c.name)}</div></td>
+          <td>${g?`<strong style="color:var(--green);font-family:'Playfair Display',serif;font-size:1.1rem">${g.score}/${g.max_score}</strong>`:'<span style="color:var(--muted);font-size:.78rem">Not graded</span>'}</td>
+          <td style="font-size:.78rem;color:var(--muted);font-style:italic">${g&&g.comment?esc(g.comment):'—'}</td>
+          <td><button class="ab ab-edit" style="font-size:.49rem" onclick="openGradeModal('${s.id}','${jsq(s.sid)}','${jsq(code)}','${jsq(s.fn+' '+s.ln)}')">✎ Grade</button></td>
+        </tr>`;
+      });
+    });
+    html+='</tbody></table></div>';
+    html+=await renderTestResultsForGrades(students);
+    el.innerHTML=html;
+  }catch(e){hideLoading();el.innerHTML='<div class="empty"><p>Error: '+e.message+'</p></div>';}
+}
+async function renderTestResultsForGrades(students){
+  try{
+    const [tests,atts]=await Promise.all([
+      SBget('tests','select=id,title,course_code'),
+      SBget('test_attempts','select=*&submitted_at=not.is.null&order=submitted_at.desc')
+    ]);
+    const byTest={}; (tests||[]).forEach(x=>byTest[x.id]=x);
+    const byStud={}; (students||[]).forEach(s=>byStud[s.id]=s);
+    let h='<h3 style="margin:26px 0 8px">📝 Online test results</h3>';
+    if(!atts||!atts.length) return h+'<div class="empty"><p>No test has been submitted yet.</p></div>';
+    h+='<div class="t-wrap"><table class="tbl"><thead><tr><th>Student</th><th>Course</th><th>Test</th><th>Mark</th><th>Date</th></tr></thead><tbody>';
+    atts.forEach(a=>{
+      const x=byTest[a.test_id], s=byStud[a.student_id]; if(!x||!s) return;
+      const pct=a.max_score?Math.round(a.score/a.max_score*100):0;
+      h+=`<tr><td><div class="tt">${esc(s.fn)} ${esc(s.ln)}</div><div class="tsub">${esc(s.sid)}</div></td>
+        <td>${esc(x.course_code)}</td><td>${esc(x.title)}${a.late?' <span class="tsub">⚠ late</span>':''}</td>
+        <td><strong>${a.score}/${a.max_score}</strong> <span class="tsub">(${pct}%)</span></td>
+        <td class="tsub">${esc(new Date(a.submitted_at).toLocaleString())}</td></tr>`;
+    });
+    return h+'</tbody></table></div>';
+  }catch(e){ return ''; }
+}
+function openGradeModal(sid,ssid,code,name){
+  document.getElementById('gm-sid').value=sid;
+  document.getElementById('gm-code').value=code;
+  set('grade-modal-title','Grade: '+name);
+  document.getElementById('grade-modal-desc').textContent=code+' — '+(COURSES_CACHE[code]?.name||'');
+  document.getElementById('gm-score').value='';
+  document.getElementById('gm-max').value=20;
+  document.getElementById('gm-comment').value='';
+  document.getElementById('modal-grade').classList.add('open');
+}
+async function saveGrade(){
+  const sid=v('gm-sid'), code=v('gm-code');
+  const score=parseFloat(document.getElementById('gm-score').value);
+  const max=parseFloat(document.getElementById('gm-max').value);
+  const comment=v('gm-comment');
+  if(isNaN(score)||score<0||score>max){alert('Invalid score.');return;}
+  // get student sid
+  const sres=await SBget('students','select=sid&id=eq.'+sid);
+  if(!sres||!sres.length) return;
+  const ssid=sres[0].sid;
+  showLoading('Saving grade…');
+  try{
+    const existing=await SBget('grades',`select=id&student_sid=eq.${ssid}&course_code=eq.${code}`);
+    if(existing&&existing.length){
+      await SBpatch('grades',{score,max_score:max,comment,graded_date:today()},`student_sid=eq.${ssid}&course_code=eq.${code}`);
+    }else{
+      await SBpost('grades',{student_sid:ssid,course_code:code,score,max_score:max,comment,graded_date:today()});
+    }
+    await pushNotif(sid,'Grade entered for '+code+': '+score+'/'+max);
+    hideLoading(); closeModal('modal-grade'); renderAdminGrades();
+  }catch(e){hideLoading();alert('Error: '+e.message);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ASSIGN MODAL
+═══════════════════════════════════════════════════════════ */
+async function openAssign(sid){
+  const res=await SBget('students','select=*&id=eq.'+sid);
+  if(!res||!res.length) return;
+  const s=res[0];
+  modalSid=sid;
+  set('assign-title','Review: '+s.fn+' '+s.ln);
+  document.getElementById('assign-desc').textContent=s.level+' · '+s.sid+' · '+s.dept;
+  const courses=await SBget('courses','select=code,name,level&order=created_at.asc');
+  const wrap=document.getElementById('assign-courses');
+  wrap.innerHTML=!courses||!courses.length?'<span style="font-size:.74rem;color:var(--muted)">No courses yet — create some first.</span>'
+    :(courses||[]).map(c=>{
+      const ch=(s.courses||[]).includes(c.code)?'checked':'';
+      const hl=c.level===s.level?'border-color:var(--green2)':'';
+      return `<label class="ccw" style="${hl}"><input type="checkbox" value="${c.code}" ${ch}><span>${c.code}</span><span style="font-size:.48rem;color:var(--muted);margin-left:2px">${c.level}</span></label>`;
+    }).join('');
+  document.getElementById('modal-assign').classList.add('open');
+}
+async function modalApprove(){
+  const courses=[...document.querySelectorAll('#assign-courses input:checked')].map(i=>i.value);
+  showLoading('Approving…');
+  try{
+    await SBpatch('students',{status:'active',courses},'id=eq.'+modalSid);
+    await pushNotif(modalSid,'Your account has been approved! You now have access to the portal.');
+    hideLoading(); closeModal('modal-assign'); renderAdmin();
+    alert('✓ Student approved with '+courses.length+' course(s)');
+  }catch(e){hideLoading();alert('Error: '+e.message);}
+}
+async function modalReject(){
+  if(!confirm('Reject this application?')) return;
+  await SBpatch('students',{status:'rejected',courses:[]},'id=eq.'+modalSid);
+  closeModal('modal-assign'); renderAdmin();
+}
+async function rmStudent(id){
+  if(!confirm('Remove this student permanently?')) return;
+  await SBdel('notifications','student_id=eq.'+id);
+  await SBdel('submissions','student_id=eq.'+id);
+  await SBdel('students','id=eq.'+id);
+  renderAdmin();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN SETTINGS
+═══════════════════════════════════════════════════════════ */
+async function renderAdminSettings(){
+  const el=document.getElementById('adm-settings-content'); if(!el) return;
+  const sets=await SBget('settings','select=key,value');
+  (sets||[]).forEach(r=>SETTINGS_CACHE[r.key]=r.value);
+  el.innerHTML=`
+    <div class="add-box">
+      <h3>Photo Requirement</h3><p>If enabled, students must upload a photo before accessing the portal.</p>
+      <div class="toggle-wrap">
+        <div><div class="toggle-lbl">Require profile photo</div></div>
+        <label class="toggle"><input type="checkbox" ${SETTINGS_CACHE.require_photo==='true'?'checked':''} onchange="saveSetting('require_photo',this.checked?'true':'false')"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <div class="add-box">
+      <h3>Default Download Permission</h3><p>Applied to all new file uploads. Can be overridden per file.</p>
+      <select class="fi" style="max-width:280px" onchange="saveSetting('default_dl',this.value)">
+        <option value="view" ${SETTINGS_CACHE.default_dl!=='download'?'selected':''}>View only — no download</option>
+        <option value="download" ${SETTINGS_CACHE.default_dl==='download'?'selected':''}>Allow download by default</option>
+      </select>
+    </div>
+    <div class="add-box">
+      <h3>Broadcast Message</h3><p>Send an in-portal notification to active students by level.</p>
+      <div class="field"><label class="fl">Target Level</label>
+        <select class="fi" id="bc-level" style="max-width:200px"><option value="All">All Students</option><option value="BSc">BSc only</option><option value="MSc">MSc only</option><option value="PhD">PhD only</option></select>
+      </div>
+      <div class="field"><label class="fl">Message</label><textarea class="fi" id="bc-msg" placeholder="Your message…" style="min-height:60px"></textarea></div>
+      <button class="ab ab-save" onclick="sendBroadcast()">📣 Send</button>
+    </div>
+    <div class="add-box">
+      <h3>Export Students CSV</h3>
+      <button class="ab ab-gold" onclick="exportCSV()">↓ Download CSV</button>
+    </div>
+    <div class="add-box" style="border-color:rgba(192,57,43,.3)">
+      <h3 style="color:var(--red)">Reset Professor Account</h3>
+      <p>Removes only professor credentials. All students, courses and data remain intact.</p>
+      <button class="ab ab-rej" onclick="resetProf()">⚠ Reset Professor Account</button>
+    </div>`;
+}
+async function saveSetting(key,value){
+  SETTINGS_CACHE[key]=value;
+  await SBpatch('settings',{value},'key=eq.'+key);
+}
+async function sendBroadcast(){
+  const level=document.getElementById('bc-level')?.value;
+  const msg=document.getElementById('bc-msg')?.value.trim();
+  if(!msg){alert('Enter a message.');return;}
+  const students=await SBget('students','select=id,level&status=eq.active');
+  const targets=(students||[]).filter(s=>level==='All'||s.level===level);
+  await Promise.all(targets.map(s=>pushNotif(s.id,'📣 '+msg)));
+  alert('✓ Sent to '+targets.length+' student(s).');
+  document.getElementById('bc-msg').value='';
+}
+async function exportCSV(){
+  const students=await SBget('students','select=fn,ln,email,sid,card_num,level,dept,status,courses&order=created_at.asc');
+  const rows=[['First Name','Last Name','Email','Student ID','Card No.','Level','Department','Status','Courses']];
+  (students||[]).forEach(s=>rows.push([s.fn,s.ln,s.email,s.sid,s.card_num,s.level,s.dept,s.status,(s.courses||[]).join(';')]));
+  const csv=rows.map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='students.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+async function resetProf(){
+  alert('The professor account is managed in Supabase: Authentication > Users. Change the password there.');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ONLINE TESTS
+═══════════════════════════════════════════════════════════ */
+const SBrpc=(fn,args)=>sb('rpc/'+fn,'POST',args||{});
+let TEST_RUN=null, TEST_TIMER=null, TR_CONTENT=null, TR_ATTS=[], TR_STUDS={};
+
+function addTestQuestion(type){
+  const d=document.createElement('div');
+  d.className='tq'; d.dataset.type=type;
+  d.style.cssText='border:1px solid #d7dfd9;border-radius:10px;padding:12px;margin:10px 0;background:#fff';
+  d.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b class="tq-num"></b><button class="ab ab-rm" type="button" onclick="removeTestQuestion(this)">Remove</button></div>
+    <div class="field"><label class="fl">Question *</label><textarea class="fi tq-text" placeholder="Question text…"></textarea></div>
+    ${type==='mcq'
+      ? `<div class="field"><label class="fl">Options (one per line, at least 2) *</label><textarea class="fi tq-opts" placeholder="Option A&#10;Option B&#10;Option C"></textarea></div>
+         <div class="field"><label class="fl">Correct option number *</label><input class="fi tq-correct" type="number" min="1" value="1"></div>`
+      : `<div class="alert alert-info" style="display:block">Written answer: you grade it by hand from the Results screen.</div>`}
+    <div class="field"><label class="fl">Points</label><input class="fi tq-pts" type="number" min="0" step="0.5" value="1"></div>`;
+  document.getElementById('tst-qlist').appendChild(d);
+  renumberTestQuestions();
+}
+function removeTestQuestion(btn){ btn.closest('.tq').remove(); renumberTestQuestions(); }
+function renumberTestQuestions(){
+  document.querySelectorAll('#tst-qlist .tq').forEach((d,i)=>{
+    d.querySelector('.tq-num').textContent='Question '+(i+1)+' · '+(d.dataset.type==='mcq'?'Multiple choice':'Written answer');
+  });
+}
+
+async function renderAdminTests(){
+  const sel=document.getElementById('tst-course'), list=document.getElementById('adm-test-list');
+  if(!sel||!list) return;
+  if(!document.querySelector('#tst-qlist .tq')) addTestQuestion('mcq');
+  try{
+    const courses=await SBget('courses','select=code,name&order=code.asc');
+    const keep=sel.value;
+    sel.innerHTML=(courses&&courses.length)
+      ? courses.map(c=>`<option value="${esc(c.code)}">${esc(c.code)} — ${esc(c.name)}</option>`).join('')
+      : '<option value="">No courses yet — create one in Courses &amp; Files</option>';
+    if(keep) sel.value=keep;
+  }catch(e){
+    sel.innerHTML='<option value="">Could not load courses: '+esc(e.message).slice(0,80)+'</option>';
+  }
+  try{
+    const [tests,atts]=await Promise.all([
+      SBget('tests','select=*&order=created_at.desc'),
+      SBget('test_attempts','select=test_id,submitted_at')
+    ]);
+    if(!tests||!tests.length){ list.innerHTML='<div class="empty"><div class="empty-ico">📝</div><p>No tests yet.</p></div>'; return; }
+    list.innerHTML=tests.map(x=>{
+      const n=(atts||[]).filter(a=>a.test_id===x.id&&a.submitted_at).length;
+      const started=(atts||[]).filter(a=>a.test_id===x.id).length;
+      return `<div class="add-box" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start">
+          <div><div class="tt">${esc(x.title)}</div>
+            <div class="tsub">${esc(x.course_code)} · ${x.duration_min?x.duration_min+' min':'no time limit'} · ${x.closes_at?'closes '+esc(new Date(x.closes_at).toLocaleString()):'no closing date'} · ${x.published?'🟢 Published':'⚪ Draft'}</div>
+            <div class="tsub">${x.access==='all'?'open to all enrolled students':x.access==='graded'?'needs a grade or authorization':'authorized students only'}</div>
+            <div class="tsub">${n} submitted · ${started-n} in progress</div></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="ab ab-ok" onclick="openTestResults('${x.id}','${jsq(x.title)}')">Results</button>
+            <button class="ab" onclick="toggleTestPublish('${x.id}',${x.published},'${jsq(x.course_code)}','${jsq(x.title)}')">${x.published?'Unpublish':'Publish'}</button>
+            <button class="ab ab-rm" onclick="delTest('${x.id}')">Delete</button>
+          </div>
+        </div></div>`;
+    }).join('');
+  }catch(e){ list.innerHTML='<div class="empty"><p>Error: '+esc(e.message)+'</p>'
+    +'<p>If the tables are missing, run supabase-tests.sql in the Supabase SQL Editor.</p></div>'; }
+}
+
+async function saveTest(publish){
+  hide('tst-err');
+  const course=v('tst-course'), title=v('tst-title'), instr=v('tst-instr');
+  const dur=parseInt(v('tst-dur'),10)||null;
+  const closeRaw=v('tst-close');
+  const showRes=document.getElementById('tst-showres').checked;
+  if(!course) return err('tst-err','Choose a course (create a course first).');
+  if(!title) return err('tst-err','Enter a title.');
+  const blocks=[...document.querySelectorAll('#tst-qlist .tq')];
+  if(!blocks.length) return err('tst-err','Add at least one question.');
+  const questions=[], key={};
+  for(let i=0;i<blocks.length;i++){
+    const b=blocks[i], type=b.dataset.type, id='q'+(i+1);
+    const text=b.querySelector('.tq-text').value.trim();
+    const pts=parseFloat(b.querySelector('.tq-pts').value);
+    if(!text) return err('tst-err','Question '+(i+1)+' has no text.');
+    const q={id,type,text,points:isNaN(pts)?1:pts};
+    if(type==='mcq'){
+      const opts=b.querySelector('.tq-opts').value.split('\n').map(s=>s.trim()).filter(Boolean);
+      const correct=parseInt(b.querySelector('.tq-correct').value,10);
+      if(opts.length<2) return err('tst-err','Question '+(i+1)+' needs at least 2 options.');
+      if(!(correct>=1&&correct<=opts.length)) return err('tst-err','Question '+(i+1)+': correct option number must be between 1 and '+opts.length+'.');
+      q.options=opts; key[id]=correct-1;
+    }
+    questions.push(q);
+  }
+  showLoading('Saving test…');
+  let newId=null;
+  try{
+    const row=await SBpost('tests',{course_code:course,title,instructions:instr||null,duration_min:dur,
+      closes_at:closeRaw?new Date(closeRaw).toISOString():null,show_result:showRes,published:!!publish,
+      access:document.getElementById('tst-access').value});
+    newId=row[0].id;
+    await SBpost('test_content',{test_id:newId,questions,key});
+    if(publish) await notifyTest(course,title);
+    hideLoading();
+    document.getElementById('tst-title').value=''; document.getElementById('tst-instr').value='';
+    document.getElementById('tst-dur').value=''; document.getElementById('tst-close').value='';
+    document.getElementById('tst-qlist').innerHTML='';
+    addTestQuestion('mcq');
+    renderAdminTests();
+    alert(publish?'✓ Test published.':'✓ Draft saved.');
+  }catch(e){
+    hideLoading();
+    if(newId){ try{ await SBdel('tests','id=eq.'+newId); }catch(_){} }
+    err('tst-err','Error: '+e.message);
+  }
+}
+async function notifyTest(code,title){
+  const students=await SBget('students','select=id,courses&status=eq.active');
+  await Promise.all((students||[]).filter(s=>(s.courses||[]).includes(code))
+    .map(s=>pushNotif(s.id,'New test in '+code+': '+title)));
+}
+async function toggleTestPublish(id,cur,code,title){
+  try{
+    await SBpatch('tests',{published:!cur},'id=eq.'+id);
+    if(!cur) await notifyTest(code,title);
+    renderAdminTests();
+  }catch(e){ alert('Error: '+e.message); }
+}
+async function delTest(id){
+  if(!confirm('Delete this test and all student submissions?')) return;
+  try{ await SBdel('tests','id=eq.'+id); renderAdminTests(); }catch(e){ alert('Error: '+e.message); }
+}
+
+let TR_TEST=null;
+async function openTestResults(id,title){
+  document.getElementById('tr-title').textContent='Results: '+title;
+  const body=document.getElementById('tr-body');
+  body.innerHTML='<div style="padding:16px;color:var(--muted)">Loading…</div>';
+  document.getElementById('modal-testres').classList.add('open');
+  try{
+    const [tst,atts,studs,cont,acc,grds]=await Promise.all([
+      SBget('tests','select=*&id=eq.'+id),
+      SBget('test_attempts','select=*&test_id=eq.'+id+'&order=started_at.asc'),
+      SBget('students','select=id,fn,ln,sid,courses,status'),
+      SBget('test_content','select=*&test_id=eq.'+id),
+      SBget('test_access','select=student_id&test_id=eq.'+id),
+      SBget('grades','select=student_sid,course_code')
+    ]);
+    TR_TEST=tst&&tst[0]; TR_ATTS=atts||[]; TR_CONTENT=cont&&cont[0]; TR_STUDS={};
+    (studs||[]).forEach(s=>TR_STUDS[s.id]=s);
+        let html='';
+    if(TR_TEST&&TR_TEST.access!=='all'){
+      const allowed=new Set((acc||[]).map(a=>a.student_id));
+      const enrolled=(studs||[]).filter(s=>s.status==='active'&&(s.courses||[]).includes(TR_TEST.course_code));
+      html+=`<div class="add-box add-box-accent"><h3>🔑 Who can take this test</h3>
+        <p>${TR_TEST.access==='graded'?'Students who already have a grade in '+esc(TR_TEST.course_code)+' can take it automatically. Tick others to authorize them.':'Tick the students you authorize.'}</p>
+        ${enrolled.length?enrolled.map(s=>{
+          const hasGrade=(grds||[]).some(g=>g.student_sid===s.sid&&g.course_code===TR_TEST.course_code);
+          return `<label class="lv-pick" style="display:block;margin:4px 0"><input type="checkbox" ${allowed.has(s.id)?'checked':''} onchange="toggleTestAccess('${id}','${s.id}',this.checked)"> ${esc(s.fn)} ${esc(s.ln)} <span class="tsub">${esc(s.sid)}${hasGrade?' · has a grade ✓':''}</span></label>`;
+        }).join(''):'<div class="tsub">No active students enrolled in this course.</div>'}</div>`;
+    }
+    if(!TR_ATTS.length){ body.innerHTML=html+'<div class="empty"><p>No student has started this test yet.</p></div>'; return; }
+    body.innerHTML=html+TR_ATTS.map(a=>{
+      const s=TR_STUDS[a.student_id]||{fn:'?',ln:'',sid:''};
+      return `<div class="add-box" style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <div><div class="tt">${esc(s.fn)} ${esc(s.ln)}</div>
+            <div class="tsub">${esc(s.sid)} · ${a.submitted_at?'Submitted '+esc(new Date(a.submitted_at).toLocaleString()):'⏳ In progress'}${a.late?' · ⚠ LATE':''}</div></div>
+          ${a.submitted_at?`<div style="display:flex;gap:6px;align-items:center">
+            <input class="fi" id="trs-${a.id}" type="number" step="0.5" style="width:90px" value="${a.score??0}">
+            <span>/ ${a.max_score??0}</span>
+            <button class="ab ab-save" onclick="saveAttemptScore('${a.id}')">Save</button>
+            <button class="ab" onclick="toggleAttemptAnswers('${a.id}')">Answers</button></div>`:''}
+        </div>
+        <div id="tra-${a.id}" style="display:none;margin-top:10px"></div></div>`;
+    }).join('');
+  }catch(e){ body.innerHTML='<div class="empty"><p>Error: '+esc(e.message)+'</p></div>'; }
+}
+async function toggleTestAccess(testId,studentId,on){
+  try{
+    if(on) await SBpost('test_access',{test_id:testId,student_id:studentId});
+    else await SBdel('test_access','test_id=eq.'+testId+'&student_id=eq.'+studentId);
+  }catch(e){ alert('Error: '+e.message); }
+}
+async function saveAttemptScore(aid){
+  const val=parseFloat(document.getElementById('trs-'+aid).value);
+  if(isNaN(val)||val<0) return alert('Invalid score.');
+  try{ await SBpatch('test_attempts',{score:val},'id=eq.'+aid); alert('✓ Score saved'); const tt=TR_TEST&&TR_TEST.title; if(TR_TEST) openTestResults(TR_TEST.id,tt); }
+  catch(e){ alert('Error: '+e.message); }
+}
+function toggleAttemptAnswers(aid){
+  const box=document.getElementById('tra-'+aid);
+  if(box.style.display==='block'){ box.style.display='none'; return; }
+  const a=TR_ATTS.find(x=>x.id===aid), qs=(TR_CONTENT&&TR_CONTENT.questions)||[], key=(TR_CONTENT&&TR_CONTENT.key)||{};
+  const ans=a.answers||{};
+  box.innerHTML=qs.map((q,i)=>{
+    let given=ans[q.id], line;
+    if(q.type==='mcq'){
+      const has=given!==undefined&&given!==null&&given!=='';
+      const ok=has&&String(given)===String(key[q.id]);
+      line=has?`${esc(q.options[given]||'?')} ${ok?'✅':'❌ (correct: '+esc(q.options[key[q.id]])+')'}`:'<i>No answer</i>';
+    }else{
+      line=given?`<div style="white-space:pre-wrap;background:#f4f7f5;padding:8px;border-radius:6px">${esc(given)}</div>`:'<i>No answer</i>';
+    }
+    return `<div style="margin:8px 0"><b>${i+1}. ${esc(q.text)}</b> <span class="tsub">(${q.points} pt)</span><div>${line}</div></div>`;
+  }).join('');
+  box.style.display='block';
+}
+
+/* ── Student side ── */
+let TESTS_CACHE={};
+async function renderPortalTests(){
+  const el=document.getElementById('p-tests'); if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const [tests,status]=await Promise.all([
+      SBget('tests','select=*&published=eq.true&order=created_at.desc'),
+      SBrpc('my_test_status',{})
+    ]);
+    const mine=(tests||[]).filter(x=>(CS.courses||[]).includes(x.course_code));
+    TESTS_CACHE={}; mine.forEach(x=>TESTS_CACHE[x.id]=x);
+    if(!mine.length){ el.innerHTML='<div class="empty"><div class="empty-ico">📝</div><p>No tests available.</p></div>'; return; }
+    el.innerHTML=mine.map(x=>{
+      const st=(status||[]).find(s=>s.test_id===x.id)||{};
+      const closed=x.closes_at&&new Date()>new Date(x.closes_at);
+      let state, btn='';
+      if(st.submitted_at){
+        const has=st.score!==null&&st.score!==undefined;
+        state='✅ Submitted'+(has?' · Mark: '+st.score+' / '+st.max_score:'');
+      }else if(st.started_at){
+        state='⏳ In progress';
+        btn=closed?'':`<button class="ab ab-ok" onclick="startTest('${x.id}')">Continue</button>`;
+      }else if(closed){ state='🔒 Closed'; }
+      else if(!st.can_take){ state='🔒 Not available yet — it opens once you have a grade in this course or the professor authorizes you.'; }
+      else{ state='Not started'; btn=`<button class="ab ab-ok" onclick="startTest('${x.id}')">Start test</button>`; }
+      return `<div class="add-box" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <div><div class="tt">${esc(x.title)}</div>
+            <div class="tsub">${esc(x.course_code)} · ${x.duration_min?x.duration_min+' min':'no time limit'}${x.closes_at?' · closes '+esc(new Date(x.closes_at).toLocaleString()):''}</div>
+            <div class="tsub">${state}</div></div>
+          ${btn}</div></div>`;
+    }).join('');
+  }catch(e){ el.innerHTML='<div class="empty"><p>Error: '+esc(e.message)+'</p></div>'; }
+}
+
+async function startTest(id){
+  if(!confirm('Start the test now? If it has a time limit, the clock starts immediately and cannot be paused. You can submit only once.')) return;
+  showLoading('Opening test…');
+  try{
+    const d=await SBrpc('start_test',{p_test:id});
+    hideLoading();
+    TEST_RUN={id,questions:d.questions||[]};
+    document.getElementById('tk-title').textContent=d.title;
+    document.getElementById('tk-instr').textContent=d.instructions||'';
+    hide('tk-err');
+    document.getElementById('tk-submit').disabled=false;
+    document.getElementById('tk-body').innerHTML=TEST_RUN.questions.map((q,i)=>{
+      const inner=q.type==='mcq'
+        ? (q.options||[]).map((o,j)=>`<label style="display:block;margin:6px 0;cursor:pointer"><input type="radio" name="tq_${q.id}" value="${j}"> ${esc(o)}</label>`).join('')
+        : `<textarea class="fi" data-qid="${q.id}" placeholder="Your answer…" style="min-height:90px"></textarea>`;
+      return `<div style="margin:16px 0;padding:12px;border:1px solid #d7dfd9;border-radius:10px"><div style="white-space:pre-wrap"><b>${i+1}. ${esc(q.text)}</b> <span class="tsub">(${q.points} pt)</span></div>${inner}</div>`;
+    }).join('');
+    document.getElementById('modal-taketest').classList.add('open');
+    clearInterval(TEST_TIMER);
+    const timerEl=document.getElementById('tk-timer');
+    if(d.seconds_left===null||d.seconds_left===undefined){ timerEl.textContent=''; }
+    else{
+      let left=d.seconds_left;
+      const tick=()=>{
+        const m=Math.floor(left/60), s=left%60;
+        timerEl.textContent='⏱ '+m+':'+String(s).padStart(2,'0');
+        timerEl.style.color=left<=60?'#b3261e':'';
+        if(left<=0){ clearInterval(TEST_TIMER); submitTest(true); }
+        left--;
+      };
+      tick(); TEST_TIMER=setInterval(tick,1000);
+    }
+  }catch(e){
+    hideLoading();
+    alert((e.message||'').replace(/^.*"message":"([^"]*)".*$/,'$1'));
+    renderPortalTests();
+  }
+}
+function leaveTest(){
+  if(!confirm('Close the test window? Your answers are NOT submitted. You can come back with "Continue", but the clock keeps running.')) return;
+  clearInterval(TEST_TIMER);
+  document.getElementById('modal-taketest').classList.remove('open');
+  renderPortalTests();
+}
+async function submitTest(auto){
+  if(!TEST_RUN) return;
+  if(!auto && !confirm('Submit your answers now? You cannot change them afterwards.')) return;
+  const answers={};
+  TEST_RUN.questions.forEach(q=>{
+    if(q.type==='mcq'){
+      const r=document.querySelector('input[name="tq_'+q.id+'"]:checked');
+      if(r) answers[q.id]=r.value;
+    }else{
+      const ta=document.querySelector('textarea[data-qid="'+q.id+'"]');
+      if(ta&&ta.value.trim()) answers[q.id]=ta.value;
+    }
+  });
+  document.getElementById('tk-submit').disabled=true;
+  clearInterval(TEST_TIMER);
+  showLoading('Submitting…');
+  try{
+    const r=await SBrpc('submit_test',{p_test:TEST_RUN.id,p_answers:answers});
+    hideLoading();
+    document.getElementById('modal-taketest').classList.remove('open');
+    TEST_RUN=null;
+    alert((r.late?'Your answers were submitted after the time limit and will be reviewed by the professor.':'✓ Your answers were submitted.')
+      +(r.score!==null&&r.score!==undefined?'\nMark (auto-graded part): '+r.score+' / '+r.max:''));
+    renderPortalTests();
+  }catch(e){
+    hideLoading();
+    document.getElementById('tk-submit').disabled=false;
+    err('tk-err','Error: '+e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════════ */
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function v(id){return document.getElementById(id)?.value.trim()||'';}
+function set(id,txt){const el=document.getElementById(id);if(el)el.textContent=txt;}
+function hide(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+function err(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';}}
+function ok(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function jsq(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/\n/g,' ');}
+function openHtmlInTab(b64){
+  const html=b64ToText(b64);
+  const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  const a=document.createElement('a');
+  a.href=url; a.target='_blank'; a.rel='noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),600000);
+}
+function b64ToText(b64){const bin=atob(b64);return new TextDecoder('utf-8').decode(Uint8Array.from(bin,c=>c.charCodeAt(0)));}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
+  const id=document.querySelector('.screen.active')?.id;
+  if(id==='scr-login') doLogin();
+  else if(id==='scr-admin-login') doAdminLogin();
+  else if(id==='scr-register') doRegister();
+  else if(id==='scr-setup') doSetup();
+});
+['modal-assign','modal-upload','modal-grade','modal-submit'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('click',function(e){if(e.target===this)closeModal(id);});
+});
+function setupDrop(dropId,inputId,handler){
+  const dz=document.getElementById(dropId); if(!dz) return;
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('drag');
+    const f=e.dataTransfer.files[0]; if(!f) return;
+    const dt=new DataTransfer();dt.items.add(f);
+    const inp=document.getElementById(inputId);inp.files=dt.files;handler(inp);
+  });
+}
+setupDrop('uf-drop-zone','uf-file',onFileSelected);
+setupDrop('sub-drop-zone','sub-file',onSubFileSelected);
+</script>
+</body>
+</html>
